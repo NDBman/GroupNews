@@ -2,8 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.epam.internship</groupId>
-    <artifactId>GroupNews</artifactId>
+    <artifactId>groupnews</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>GroupNews-service</artifactId>
+  <artifactId>groupnews-service</artifactId>
 </project>
