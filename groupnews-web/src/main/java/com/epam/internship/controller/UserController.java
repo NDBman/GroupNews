@@ -21,10 +21,13 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<UserEntity> getUsers(){
+	public UserController() {
 		users.add(userService.createUser("Mr. Brown", "brown@test.com"));
 		users.add(userService.createUser("Mr. Green", "green@test.com"));
+	}
+	
+	@RequestMapping(method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<UserEntity> getUsers(){
 		return users;
 	}
 }
