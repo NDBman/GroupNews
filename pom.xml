@@ -26,8 +26,8 @@
 	</properties>
 
 	<modules>
-		<module>GroupNews-web</module>
-		<module>GroupNews-service</module>
-		<module>GroupNews-dao</module>
+		<module>groupnews-web</module>
+		<module>groupnews-service</module>
+		<module>groupnews-dao</module>
 	</modules>
 </project>
