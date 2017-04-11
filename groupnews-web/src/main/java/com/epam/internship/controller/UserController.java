@@ -1,11 +1,11 @@
 package com.epam.internship.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.internship.UserService;
@@ -15,15 +15,12 @@ import com.epam.internship.dto.User;
 @RequestMapping("/users")
 public class UserController {
 
-	private List<User> users = new ArrayList<>();
-
 	@Autowired
 	private UserService userService;
 
 	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
 	public List<User> getUsers() {
-		users.add(userService.createUser("Mr. Brown", "brown@test.com"));
-		users.add(userService.createUser("Mr. Green", "green@test.com"));
-		return users;
+		return userService.getAllUsers();
 	}
 }
