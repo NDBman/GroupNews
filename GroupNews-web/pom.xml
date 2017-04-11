@@ -14,10 +14,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
@@ -32,7 +28,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.epam.internship</groupId>
-			<artifactId>groupnews-dao</artifactId>
+			<artifactId>groupnews-service</artifactId>
 			<version>${app.version}</version>
 		</dependency>
   </dependencies>
