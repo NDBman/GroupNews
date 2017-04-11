@@ -1,8 +1,8 @@
 package com.epam.internship;
 
-import com.epam.internship.entity.UserEntity;
+import com.epam.internship.dto.User;
 
 public interface UserService {
 
-	public UserEntity createUser(String name, String email);
+	public User createUser(String name, String email);
 }

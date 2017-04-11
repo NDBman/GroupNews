@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.internship.UserService;
-import com.epam.internship.entity.UserEntity;
+import com.epam.internship.dto.User;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-	private List<UserEntity> users = new ArrayList<>();
-	
+	private List<User> users = new ArrayList<>();
+
 	@Autowired
 	private UserService userService;
-	
-	@RequestMapping(method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<UserEntity> getUsers(){
+
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<User> getUsers() {
 		users.add(userService.createUser("Mr. Brown", "brown@test.com"));
 		users.add(userService.createUser("Mr. Green", "green@test.com"));
 		return users;
