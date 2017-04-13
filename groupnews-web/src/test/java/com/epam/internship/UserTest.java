@@ -45,4 +45,5 @@ public class UserTest {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.content().string("[" + user1.toString() + "," + user2.toString() + "]"));
 	}
+	
 }

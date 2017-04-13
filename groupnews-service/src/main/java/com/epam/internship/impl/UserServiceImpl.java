@@ -17,10 +17,6 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	
 	private UserConverter userConverter = new UserConverter();
-	
-	public UserServiceImpl() {
-		userRepository.save(userConverter.convertUser(User.builder().name("Mr. Brown").email("brown@test.com").build()));
-	}
 
 	@Override
 	public User createUser(String name, String email) {
