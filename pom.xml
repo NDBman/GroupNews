@@ -10,6 +10,12 @@
 
 	<name>GroupNews</name>
 	<description></description>
+	
+	<modules>
+		<module>groupnews-dao</module>
+		<module>groupnews-service</module>
+		<module>groupnews-web</module>
+	</modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -36,9 +42,4 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<modules>
-		<module>groupnews-web</module>
-		<module>groupnews-service</module>
-		<module>groupnews-dao</module>
-	</modules>
 </project>
