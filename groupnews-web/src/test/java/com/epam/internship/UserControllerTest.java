@@ -21,13 +21,13 @@ import com.epam.internship.dto.User;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = {UserController.class})
-public class UserTest {
+public class UserControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private UserService userService;
+	private UserService systemUnderTest;
 	
 	private User user1;
 	private User user2;
@@ -41,7 +41,7 @@ public class UserTest {
 
 	@Test
 	public void shouldReturnUsers() throws Exception {
-		Mockito.when(userService.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
+		Mockito.when(systemUnderTest.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
 		mockMvc.perform(MockMvcRequestBuilders.get("/users"))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
