@@ -40,7 +40,6 @@ public class UserTest {
 	@Test
 	public void shouldReturnUsers() throws Exception {
 		Mockito.when(userService.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
-		System.out.println(user1.toString());
 		mockMvc.perform(MockMvcRequestBuilders.get("/users")).andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.content().string("[" + user1.toString() + "," + user2.toString() + "]"));
