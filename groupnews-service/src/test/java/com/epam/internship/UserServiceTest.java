@@ -45,6 +45,7 @@ public class UserServiceTest {
 
 	@Before
 	public void setUp() {
+		//Given
 		userEntity1 = UserEntity.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
 		userEntity2 = UserEntity.builder().name(USER_NAME_2).email(USER_EMAIL_2).build();
 		user1 = User.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
@@ -59,8 +60,9 @@ public class UserServiceTest {
 
 	@Test
 	public void shoudlReturnAllUsers() {
-		System.out.println(systemUnderTest.getAllUsers());
+		//When
 		List<User> users = systemUnderTest.getAllUsers();
+		//Then
 		assertEquals(users.get(0).getName(), USER_NAME_1);
 		assertEquals(users.get(0).getEmail(), USER_EMAIL_1);
 		assertEquals(users.get(1).getName(), USER_NAME_2);
@@ -69,7 +71,9 @@ public class UserServiceTest {
 
 	@Test
 	public void shouldCreateUser() {
+		//When
 		User user = systemUnderTest.createUser(USER_NAME_1, USER_EMAIL_1);
+		//Then
 		assertEquals(USER_NAME_1, user.getName());
 		assertEquals(USER_EMAIL_1, user.getEmail());
 	}
