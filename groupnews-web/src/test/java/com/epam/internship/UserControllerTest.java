@@ -35,13 +35,16 @@ public class UserControllerTest {
 	
 	@Before
 	public void setUp(){
+		//Given
 		user1 = User.builder().name("Mr Brown").email("brown@test.com").build();
 		user2 = User.builder().name("Mr green").email("green@test.com").build();
 	}
 
 	@Test
 	public void shouldReturnUsers() throws Exception {
+		//When
 		Mockito.when(systemUnderTest.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
+		//Then
 		mockMvc.perform(MockMvcRequestBuilders.get("/users"))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
