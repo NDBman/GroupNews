@@ -31,6 +31,10 @@ public class UserControllerTest {
 	
 	private User user1;
 	private User user2;
+	private User user3;
+	
+	private final String CREATE_NAME = "Joe";
+	private final String CREATE_EMAIL = "test@alma.com";
 	
 	
 	@Before
@@ -38,6 +42,8 @@ public class UserControllerTest {
 		//Given
 		user1 = User.builder().name("Mr Brown").email("brown@test.com").build();
 		user2 = User.builder().name("Mr green").email("green@test.com").build();
+		
+		user3 = User.builder().name(CREATE_NAME).email(CREATE_EMAIL).build();
 	}
 
 	@Test
@@ -55,4 +61,15 @@ public class UserControllerTest {
 				
 	}
 	
+	@Test
+	public void shouldCreateUser() throws Exception{
+		//Given
+		Mockito.when(systemUnderTest.createUser(CREATE_NAME, CREATE_EMAIL)).thenReturn(user3);
+		//WhenThen
+		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(CREATE_NAME))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(CREATE_EMAIL));
+	}
 }
