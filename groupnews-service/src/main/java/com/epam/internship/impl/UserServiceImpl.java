@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ConversionService conversionService;
 
+
 	@Override
 	public User createUser(String name, String email) {
 		User newUser = User.builder().name(name).email(email).build();
@@ -35,6 +36,20 @@ public class UserServiceImpl implements UserService {
 				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(UserEntity.class)),
 				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(User.class)));
 
+	}
+
+	@Override
+	public boolean emailAlreadyExists(String email) {
+		for(UserEntity userEntity : userRepository.findAll()){
+			if(userEntity.getEmail().equals(email))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean emailIsNotValid(String email) {
+		return false;
 	}
 
 }
