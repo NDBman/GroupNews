@@ -91,4 +91,18 @@ public class DaoIT {
 		//Then
 		assertEquals(0, systemUnderTest.count());
 	}
+	
+	@Test(expected=Exception.class)
+	@Transactional
+	public void setNameforNullShouldFail(){
+		UserEntity userEntity = UserEntity.builder().name(null).email("test@email.com").build();
+		systemUnderTest.save(userEntity);
+	}
+	
+	@Test(expected=Exception.class)
+	@Transactional
+	public void setEmailForAlreadyExistingShouldFail(){
+		UserEntity userEntity = UserEntity.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
+		systemUnderTest.save(userEntity);
+	}
 }
