@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.epam.internship.entity.UserEntity;
@@ -18,7 +17,7 @@ import com.epam.internship.repo.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootApplication
-@Rollback
+@Transactional
 public class UserRepositoryIT {
 
 	@Autowired
@@ -32,13 +31,11 @@ public class UserRepositoryIT {
 	private final String USER_EMAIL_3 = "blue@test.com";
 
 	@Test
-	@Transactional
 	public void count() {
 		assertEquals(2, systemUnderTest.count());
 	}
 
 	@Test
-	@Transactional
 	public void deleteOneOtherTwoShouldStay() {
 		//When
 		systemUnderTest.delete(1L);
@@ -49,7 +46,6 @@ public class UserRepositoryIT {
 	}
 
 	@Test
-	@Transactional
 	public void findOneShouldReturnUserEntityWithId() {
 		//When
 		UserEntity userEntity = systemUnderTest.findOne(1L);
@@ -59,7 +55,6 @@ public class UserRepositoryIT {
 	}
 
 	@Test
-	@Transactional
 	public void saveUserEntity() {
 		//When
 		UserEntity userEntity = systemUnderTest
@@ -71,7 +66,6 @@ public class UserRepositoryIT {
 	}
 	
 	@Test
-	@Transactional
 	public void findAllShouldReturnAllUserEntites(){
 		//When
 		List<UserEntity> userEntities = systemUnderTest.findAll();
@@ -84,7 +78,6 @@ public class UserRepositoryIT {
 	}
 	
 	@Test
-	@Transactional
 	public void deleteAllShouldLeaveNoUserEntites(){
 		//When
 		systemUnderTest.deleteAll();
@@ -93,14 +86,12 @@ public class UserRepositoryIT {
 	}
 	
 	@Test(expected=Exception.class)
-	@Transactional
 	public void setNameforNullShouldFail(){
 		UserEntity userEntity = UserEntity.builder().name(null).email("test@email.com").build();
 		systemUnderTest.save(userEntity);
 	}
 	
 	@Test(expected=Exception.class)
-	@Transactional
 	public void setEmailForAlreadyExistingShouldFail(){
 		UserEntity userEntity = UserEntity.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
 		systemUnderTest.save(userEntity);
