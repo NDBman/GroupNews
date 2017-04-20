@@ -28,7 +28,7 @@ public class UserController {
 	
 	@PostMapping(value="new")
 	public ResponseEntity<User> registerUser(@RequestParam String name, @RequestParam String email){
-		if(name == null || email == null){
+		if(name.equals("") || email.equals("")){
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		if(userService.emailAlreadyExists(email)){
