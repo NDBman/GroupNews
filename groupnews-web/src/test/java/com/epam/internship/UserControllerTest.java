@@ -72,4 +72,19 @@ public class UserControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(CREATE_NAME))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(CREATE_EMAIL));
 	}
+	
+	@Test
+	public void shouldReturnBadRequestStatus() throws Exception{
+		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", "").param("email", CREATE_EMAIL))
+		.andDo(MockMvcResultHandlers.print())
+		.andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldReturnConflictStatus() throws Exception{
+		Mockito.when(systemUnderTest.emailAlreadyExists(CREATE_EMAIL)).thenReturn(true);
+		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
+		.andDo(MockMvcResultHandlers.print())
+		.andExpect(MockMvcResultMatchers.status().isConflict());
+	}
 }

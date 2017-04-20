@@ -1,6 +1,8 @@
 package com.epam.internship.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -21,7 +23,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ConversionService conversionService;
 
-
+	private final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	
+	private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+	
 	@Override
 	public User createUser(String name, String email) {
 		User newUser = User.builder().name(name).email(email).build();
@@ -49,7 +55,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean emailIsNotValid(String email) {
-		return false;
+		Matcher matcher = pattern.matcher(email);
+		if(matcher.find()){
+			return false;
+		}
+		return true;
 	}
 
 }
