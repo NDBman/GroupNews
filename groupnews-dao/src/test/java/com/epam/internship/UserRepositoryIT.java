@@ -19,7 +19,7 @@ import com.epam.internship.repo.UserRepository;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootApplication
 @Rollback
-public class DaoIT {
+public class UserRepositoryIT {
 
 	@Autowired
 	private UserRepository systemUnderTest;
@@ -50,7 +50,7 @@ public class DaoIT {
 
 	@Test
 	@Transactional
-	public void findOneShouldReturnUserEntityWithIdTest() {
+	public void findOneShouldReturnUserEntityWithId() {
 		//When
 		UserEntity userEntity = systemUnderTest.findOne(1L);
 		//Then
@@ -60,7 +60,7 @@ public class DaoIT {
 
 	@Test
 	@Transactional
-	public void saveUserEntityTest() {
+	public void saveUserEntity() {
 		//When
 		UserEntity userEntity = systemUnderTest
 				.save(UserEntity.builder().name(USER_NAME_3).email(USER_EMAIL_3).build());
@@ -72,7 +72,7 @@ public class DaoIT {
 	
 	@Test
 	@Transactional
-	public void findAllShouldReturnAllUserEntitesTest(){
+	public void findAllShouldReturnAllUserEntites(){
 		//When
 		List<UserEntity> userEntities = systemUnderTest.findAll();
 		//Then
