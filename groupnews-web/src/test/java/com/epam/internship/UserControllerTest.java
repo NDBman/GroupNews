@@ -50,9 +50,8 @@ public class UserControllerTest {
 	public void shouldReturnUsers() throws Exception {
 		//When
 		Mockito.when(systemUnderTest.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
-		//Then
-		mockMvc.perform(MockMvcRequestBuilders.get("/users"))
-				.andDo(MockMvcResultHandlers.print())
+		mockMvc.perform(MockMvcRequestBuilders.get("/users")).andDo(MockMvcResultHandlers.print())
+				//Then
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(jsonPath("$[:1].name").value(user1.getName()))
 				.andExpect(jsonPath("$[:1].email").value(user1.getEmail()))
@@ -65,9 +64,10 @@ public class UserControllerTest {
 	public void shouldCreateUser() throws Exception{
 		//Given
 		Mockito.when(systemUnderTest.createUser(CREATE_NAME, CREATE_EMAIL)).thenReturn(user3);
-		//WhenThen
+		//When
 		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
 				.andDo(MockMvcResultHandlers.print())
+				//Then
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(CREATE_NAME))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(CREATE_EMAIL));
@@ -75,8 +75,10 @@ public class UserControllerTest {
 	
 	@Test
 	public void shouldReturnBadRequestStatus() throws Exception{
+		//When
 		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", "").param("email", CREATE_EMAIL))
 		.andDo(MockMvcResultHandlers.print())
+		//Then
 		.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 	
