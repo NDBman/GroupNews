@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 		if (name.equals("") || !isEmailValid(email)) {
 			throw new IllegalArgumentException();
 		} else {
-			if(emailAlreadyExists(email)){
+			if (emailAlreadyExists(email)) {
 				throw new DataIntegrityViolationException("This email is already used.");
 			}
 			User newUser = User.builder().name(name).email(email).build();
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean emailAlreadyExists(String email) {
 		for (UserEntity userEntity : userRepository.findAll()) {
-			if (userEntity.getEmail().equals(email)){
+			if (userEntity.getEmail().equals(email)) {
 				return true;
 			}
 		}

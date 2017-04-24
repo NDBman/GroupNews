@@ -11,13 +11,13 @@ public class ExceptionController {
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(IllegalArgumentException.class)
-	public void handleBadRequest(){
-		
+	public void handleBadRequest() {
+
 	}
-	
+
 	@ResponseStatus(HttpStatus.CONFLICT)
 	@ExceptionHandler(DataIntegrityViolationException.class)
-	public void handleConflict(){
-		
+	public void handleConflict() {
+
 	}
 }
