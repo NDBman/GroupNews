@@ -13,16 +13,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
 import com.epam.internship.impl.UserServiceImpl;
 import com.epam.internship.repo.UserRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
 	private final String USER_NAME_1 = "Mr. Brown";
@@ -82,12 +82,22 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void shouldReturnFalseWithUniqueEmail(){
+	public void shoudlReturnTrueForValidEmail(){
+		assertTrue(systemUnderTest.isEmailValid(USER_EMAIL_1));
+	}
+	
+	@Test
+	public void shoudlReturnDalseForInvalidEmail(){
+		assertFalse(systemUnderTest.isEmailValid("notvalidemail"));
+	}
+	
+	@Test
+	public void shouldReturnFalseForUniqueEmail(){
 		assertFalse(systemUnderTest.emailAlreadyExists(USER_UNIQUE_EMAIL));
 	}
 	
 	@Test
-	public void shouldReturnFalseWithExistingEmail(){
+	public void shouldReturnFalseForExistingEmail(){
 		assertTrue(systemUnderTest.emailAlreadyExists(USER_EMAIL_1));
 	}
 }
