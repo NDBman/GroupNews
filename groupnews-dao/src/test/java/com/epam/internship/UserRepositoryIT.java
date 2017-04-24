@@ -86,13 +86,13 @@ public class UserRepositoryIT {
 	}
 
 	@Test(expected = Exception.class)
-	public void setNameforNullShouldFail() {
+	public void saveShouldFailForNullName() {
 		UserEntity userEntity = UserEntity.builder().name(null).email("test@email.com").build();
 		systemUnderTest.save(userEntity);
 	}
 
 	@Test(expected = Exception.class)
-	public void setEmailForAlreadyExistingShouldFail() {
+	public void saveShouldFailForAlreadyExistingEmail() {
 		UserEntity userEntity = UserEntity.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
 		systemUnderTest.save(userEntity);
 	}
