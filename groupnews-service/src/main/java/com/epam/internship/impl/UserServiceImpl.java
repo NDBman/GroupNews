@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-	
+
 	@Override
 	public User createUser(String name, String email) {
 		if (name.equals("") || !isEmailValid(email)) {

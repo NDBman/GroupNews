@@ -78,17 +78,12 @@ public class UserServiceTest {
 	@Test
 	public void shouldCreateUser() {
 		// When
-<<<<<<< HEAD
 		User user = systemUnderTest.createUser(USER_NAME_1, USER_UNIQUE_EMAIL);
-=======
-		User user = systemUnderTest.createUser(USER_NAME_1, USER_EMAIL_1);
->>>>>>> Created services and test cases for getting one user by id.
 		// Then
 		assertEquals(USER_NAME_1, user.getName());
 		assertEquals(USER_UNIQUE_EMAIL, user.getEmail());
 	}
 
-<<<<<<< HEAD
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldThrowIllegalArgumentExceptionForEmptyName() {
 		systemUnderTest.createUser(EMPTY_STRING, USER_EMAIL_1);
@@ -104,26 +99,15 @@ public class UserServiceTest {
 		systemUnderTest.createUser(USER_UNIQUE_NAME, USER_EMAIL_1);
 	}
 
-=======
-	@Test
-	public void shouldReturnFalseWithUniqueEmail() {
-		assertFalse(systemUnderTest.emailAlreadyExists(USER_UNIQUE_EMAIL));
-	}
-
-	@Test
-	public void shouldReturnFalseWithExistingEmail() {
-		assertTrue(systemUnderTest.emailAlreadyExists(USER_EMAIL_1));
-	}
-
 	@Test
 	public void shouldReturnUserForMatchingId() {
-		//Given
+		// Given
 		Mockito.when(systemUnderTest.getUserById(USER_ID_1)).thenReturn(user1);
-		//When
+		// When
 		User user = systemUnderTest.getUserById(USER_ID_1);
-		//Then
+		// Then
 		assertEquals(USER_NAME_1, user.getName());
 		assertEquals(USER_EMAIL_1, user.getEmail());
 	}
->>>>>>> Created services and test cases for getting one user by id.
+	
 }

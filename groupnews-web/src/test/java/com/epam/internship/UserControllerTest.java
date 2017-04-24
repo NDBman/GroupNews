@@ -36,14 +36,14 @@ public class UserControllerTest {
 
 	private final String CREATE_NAME = "Joe";
 	private final String CREATE_EMAIL = "test@alma.com";
-	
+
 	private final Long USER_ID_1 = 1L;
 	private final String USER_NAME_1 = "Mr Brown";
 	private final String USER_EMAIL_1 = "brown@test.com";
 
 	private final String USER_NAME_2 = "Mr green";
 	private final String USER_EMAIL_2 = "green@test.com";
-	
+
 	@Before
 	public void setUp() {
 		// Given
@@ -90,18 +90,28 @@ public class UserControllerTest {
 	}
 
 
-	
+	@Test
+	public void shouldReturnSingleUser() throws Exception {
+		// Given
+		Mockito.when(userService.getUserById(USER_ID_1)).thenReturn(user1);
+		// When
+		mockMvc.perform(MockMvcRequestBuilders.get("/users/1")).andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(USER_NAME_1))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(USER_EMAIL_1))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
 	@Test
 	public void shoudlReturnNotFoundStatus() throws Exception {
-		//When
+		// When
 		mockMvc.perform(MockMvcRequestBuilders.get("/users/1")).andDo(MockMvcResultHandlers.print())
-			//Then
-			.andExpect(MockMvcResultMatchers.status().isNotFound());
+				// Then
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
-	
+
 	@Test
 	public void shouldReturnBadRequestStatusForInvalidPathVariable() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/users/pistike")).andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isBadRequest());
+				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 }

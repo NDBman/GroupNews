@@ -31,5 +31,13 @@ public class UserController {
 	public ResponseEntity<User> registerUser(@RequestParam String name, @RequestParam String email){
 		return new ResponseEntity<User>(userService.createUser(name, email),HttpStatus.OK);
 	}
-	
+
+	@GetMapping("users/{id}")
+	public ResponseEntity<User> getSingleUser(@PathVariable("id") Long id) {
+		User user = userService.getUserById(id);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<User>(userService.getUserById(id), HttpStatus.OK);
+	}
 }
