@@ -102,7 +102,7 @@ public class UserServiceTest {
 	@Test
 	public void shouldReturnUserForMatchingId() {
 		// Given
-		Mockito.when(systemUnderTest.getUserById(USER_ID_1)).thenReturn(user1);
+		Mockito.when(conversionService.convert(userRepository.findOne(USER_ID_1), User.class)).thenReturn(user1);
 		// When
 		User user = systemUnderTest.getUserById(USER_ID_1);
 		// Then
