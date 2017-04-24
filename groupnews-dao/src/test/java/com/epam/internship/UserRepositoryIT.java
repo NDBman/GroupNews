@@ -36,7 +36,7 @@ public class UserRepositoryIT {
 	}
 
 	@Test
-	public void deleteOneOtherTwoShouldStay() {
+	public void deleteOneOtherOneShouldStay() {
 		//When
 		systemUnderTest.delete(1L);
 		//Then
