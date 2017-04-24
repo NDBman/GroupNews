@@ -64,7 +64,7 @@ public class UserControllerTest {
 		// Given
 		Mockito.when(userService.createUser(CREATE_NAME, CREATE_EMAIL)).thenReturn(user3);
 		// When
-		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
+		mockMvc.perform(MockMvcRequestBuilders.post("/users/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
 				.andDo(MockMvcResultHandlers.print())
 				// Then
 				.andExpect(MockMvcResultMatchers.status().isOk())
