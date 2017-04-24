@@ -75,10 +75,10 @@ public class UserServiceTest {
 	@Test
 	public void shouldCreateUser() {
 		//When
-		User user = systemUnderTest.createUser(USER_NAME_1, USER_EMAIL_1);
+		User user = systemUnderTest.createUser(USER_NAME_1, USER_UNIQUE_EMAIL);
 		//Then
 		assertEquals(USER_NAME_1, user.getName());
-		assertEquals(USER_EMAIL_1, user.getEmail());
+		assertEquals(USER_UNIQUE_EMAIL, user.getEmail());
 	}
 	
 	@Test

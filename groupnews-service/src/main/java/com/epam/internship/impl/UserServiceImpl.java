@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.epam.internship.UserService;
@@ -25,17 +26,20 @@ public class UserServiceImpl implements UserService {
 
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	
+
 	private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-	
+
 	@Override
 	public User createUser(String name, String email) {
-		if(isEmailValid(email)){
+		if (name.equals("") || !isEmailValid(email)) {
+			throw new IllegalArgumentException();
+		} else {
+			if(emailAlreadyExists(email)){
+				throw new DataIntegrityViolationException("This email is already used.");
+			}
 			User newUser = User.builder().name(name).email(email).build();
 			userRepository.save(conversionService.convert(newUser, UserEntity.class));
 			return newUser;
-		}else{
-			throw new IllegalArgumentException();
 		}
 	}
 
@@ -50,8 +54,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean emailAlreadyExists(String email) {
-		for(UserEntity userEntity : userRepository.findAll()){
-			if(userEntity.getEmail().equals(email))
+		for (UserEntity userEntity : userRepository.findAll()) {
+			if (userEntity.getEmail().equals(email))
 				return true;
 		}
 		return false;
@@ -59,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
 	private boolean isEmailValid(String email) {
 		Matcher matcher = pattern.matcher(email);
-		if(matcher.find()){
+		if (matcher.find()) {
 			return true;
 		}
 		return false;
