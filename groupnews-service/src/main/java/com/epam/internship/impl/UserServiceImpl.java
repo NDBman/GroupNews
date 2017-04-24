@@ -23,16 +23,20 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ConversionService conversionService;
 
-	private final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
-	private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+	private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 	
 	@Override
 	public User createUser(String name, String email) {
-		User newUser = User.builder().name(name).email(email).build();
-		userRepository.save(conversionService.convert(newUser, UserEntity.class));
-		return newUser;
+		if(isEmailValid(email)){
+			User newUser = User.builder().name(name).email(email).build();
+			userRepository.save(conversionService.convert(newUser, UserEntity.class));
+			return newUser;
+		}else{
+			throw new IllegalArgumentException();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -53,13 +57,12 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
-	@Override
-	public boolean isEmailValid(String email) {
+	private boolean isEmailValid(String email) {
 		Matcher matcher = pattern.matcher(email);
 		if(matcher.find()){
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 }

@@ -34,9 +34,7 @@ public class UserController {
 		if(userService.emailAlreadyExists(email)){
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
-		if(userService.isEmailValid(email)){
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+		
 		return new ResponseEntity<User>(userService.createUser(name, email),HttpStatus.OK);
 	}
 }

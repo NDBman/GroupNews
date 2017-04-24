@@ -12,5 +12,4 @@ public interface UserService {
 
 	boolean emailAlreadyExists(String email);
 
-	boolean isEmailValid(String email);
 }

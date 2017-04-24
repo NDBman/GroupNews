@@ -82,16 +82,6 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void shoudlReturnTrueForValidEmail(){
-		assertTrue(systemUnderTest.isEmailValid(USER_EMAIL_1));
-	}
-	
-	@Test
-	public void shoudlReturnDalseForInvalidEmail(){
-		assertFalse(systemUnderTest.isEmailValid("notvalidemail"));
-	}
-	
-	@Test
 	public void shouldReturnFalseForUniqueEmail(){
 		assertFalse(systemUnderTest.emailAlreadyExists(USER_UNIQUE_EMAIL));
 	}
