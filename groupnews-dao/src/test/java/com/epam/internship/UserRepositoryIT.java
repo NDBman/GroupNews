@@ -37,9 +37,9 @@ public class UserRepositoryIT {
 
 	@Test
 	public void deleteOneOtherOneShouldStay() {
-		//When
+		// When
 		systemUnderTest.delete(1L);
-		//Then
+		// Then
 		assertEquals(1, systemUnderTest.count());
 		List<UserEntity> userEntites = systemUnderTest.findAll();
 		assertEquals(2L, userEntites.get(0).getId().longValue());
@@ -47,52 +47,52 @@ public class UserRepositoryIT {
 
 	@Test
 	public void findOneShouldReturnUserEntityWithId() {
-		//When
+		// When
 		UserEntity userEntity = systemUnderTest.findOne(1L);
-		//Then
+		// Then
 		assertEquals(USER_NAME_1, userEntity.getName());
 		assertEquals(USER_EMAIL_1, userEntity.getEmail());
 	}
 
 	@Test
 	public void saveUserEntity() {
-		//When
+		// When
 		UserEntity userEntity = systemUnderTest
 				.save(UserEntity.builder().name(USER_NAME_3).email(USER_EMAIL_3).build());
-		//Then
+		// Then
 		assertEquals(3, systemUnderTest.count());
 		assertEquals(USER_NAME_3, userEntity.getName());
 		assertEquals(USER_EMAIL_3, userEntity.getEmail());
 	}
-	
+
 	@Test
-	public void findAllShouldReturnAllUserEntites(){
-		//When
+	public void findAllShouldReturnAllUserEntites() {
+		// When
 		List<UserEntity> userEntities = systemUnderTest.findAll();
-		//Then
+		// Then
 		assertEquals(2, userEntities.size());
 		assertEquals(USER_NAME_1, userEntities.get(0).getName());
 		assertEquals(USER_NAME_2, userEntities.get(1).getName());
 		assertEquals(USER_EMAIL_1, userEntities.get(0).getEmail());
 		assertEquals(USER_EMAIL_2, userEntities.get(1).getEmail());
 	}
-	
+
 	@Test
-	public void deleteAllShouldLeaveNoUserEntites(){
-		//When
+	public void deleteAllShouldLeaveNoUserEntites() {
+		// When
 		systemUnderTest.deleteAll();
-		//Then
+		// Then
 		assertEquals(0, systemUnderTest.count());
 	}
-	
-	@Test(expected=Exception.class)
-	public void setNameforNullShouldFail(){
+
+	@Test(expected = Exception.class)
+	public void setNameforNullShouldFail() {
 		UserEntity userEntity = UserEntity.builder().name(null).email("test@email.com").build();
 		systemUnderTest.save(userEntity);
 	}
-	
-	@Test(expected=Exception.class)
-	public void setEmailForAlreadyExistingShouldFail(){
+
+	@Test(expected = Exception.class)
+	public void setEmailForAlreadyExistingShouldFail() {
 		UserEntity userEntity = UserEntity.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
 		systemUnderTest.save(userEntity);
 	}
