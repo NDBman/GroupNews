@@ -1,5 +1,7 @@
 package com.epam.internship;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -14,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.epam.internship.controller.UserController;
 import com.epam.internship.dto.User;
@@ -35,12 +36,19 @@ public class UserControllerTest {
 
 	private final String CREATE_NAME = "Joe";
 	private final String CREATE_EMAIL = "test@alma.com";
+	
+	private final Long USER_ID_1 = 1L;
+	private final String USER_NAME_1 = "Mr Brown";
+	private final String USER_EMAIL_1 = "brown@test.com";
 
+	private final String USER_NAME_2 = "Mr green";
+	private final String USER_EMAIL_2 = "green@test.com";
+	
 	@Before
 	public void setUp() {
 		// Given
-		user1 = User.builder().name("Mr Brown").email("brown@test.com").build();
-		user2 = User.builder().name("Mr green").email("green@test.com").build();
+		user1 = User.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
+		user2 = User.builder().name(USER_NAME_2).email(USER_EMAIL_2).build();
 
 		user3 = User.builder().name(CREATE_NAME).email(CREATE_EMAIL).build();
 	}
@@ -72,4 +80,28 @@ public class UserControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(CREATE_EMAIL));
 	}
 
+	@Test
+	public void shouldReturnBadRequestStatus() throws Exception {
+		// When
+		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", "").param("email", CREATE_EMAIL))
+				.andDo(MockMvcResultHandlers.print())
+				// Then
+				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+
+
+	
+	@Test
+	public void shoudlReturnNotFoundStatus() throws Exception {
+		//When
+		mockMvc.perform(MockMvcRequestBuilders.get("/users/1")).andDo(MockMvcResultHandlers.print())
+			//Then
+			.andExpect(MockMvcResultMatchers.status().isNotFound());
+	}
+	
+	@Test
+	public void shouldReturnBadRequestStatusForInvalidPathVariable() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/users/pistike")).andDo(MockMvcResultHandlers.print())
+			.andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
 }
