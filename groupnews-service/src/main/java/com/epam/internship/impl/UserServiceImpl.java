@@ -66,4 +66,9 @@ public class UserServiceImpl implements UserService {
 		return matcher.find();
 	}
 
+	@Override
+	public User getUserById(Long id) {
+		return conversionService.convert(userRepository.findOne(id), User.class);
+	}
+
 }
