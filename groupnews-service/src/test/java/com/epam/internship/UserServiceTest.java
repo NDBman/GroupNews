@@ -1,6 +1,8 @@
 package com.epam.internship;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +29,11 @@ public class UserServiceTest {
 	private final String USER_NAME_2 = "Mr. Green";
 	private final String USER_EMAIL_1 = "brown@test.com";
 	private final String USER_EMAIL_2 = "green@test.com";
+	private final String USER_UNIQUE_EMAIL = "alma@email.com";
 
 	@Mock
 	private UserRepository userRepository;
-
+	
 	@Mock
 	private ConversionService conversionService;
 
@@ -76,5 +79,15 @@ public class UserServiceTest {
 		//Then
 		assertEquals(USER_NAME_1, user.getName());
 		assertEquals(USER_EMAIL_1, user.getEmail());
+	}
+	
+	@Test
+	public void shouldReturnFalseWithUniqueEmail(){
+		assertFalse(systemUnderTest.emailAlreadyExists(USER_UNIQUE_EMAIL));
+	}
+	
+	@Test
+	public void shouldReturnFalseWithExistingEmail(){
+		assertTrue(systemUnderTest.emailAlreadyExists(USER_EMAIL_1));
 	}
 }

@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean emailIsNotValid(String email) {
+	public boolean isEmailValid(String email) {
 		Matcher matcher = pattern.matcher(email);
 		if(matcher.find()){
 			return false;

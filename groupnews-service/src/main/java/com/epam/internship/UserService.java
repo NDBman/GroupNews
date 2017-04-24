@@ -9,5 +9,5 @@ public interface UserService {
 	public User createUser(String name, String email);
 	public List<User> getAllUsers();
 	public boolean emailAlreadyExists(String email);
-	public boolean emailIsNotValid(String email);
+	public boolean isEmailValid(String email);
 }
