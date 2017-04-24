@@ -6,8 +6,11 @@ import com.epam.internship.dto.User;
 
 public interface UserService {
 
-	public User createUser(String name, String email);
-	public List<User> getAllUsers();
-	public boolean emailAlreadyExists(String email);
-	public boolean isEmailValid(String email);
+	User createUser(String name, String email);
+
+	List<User> getAllUsers();
+
+	boolean emailAlreadyExists(String email);
+
+	boolean isEmailValid(String email);
 }
