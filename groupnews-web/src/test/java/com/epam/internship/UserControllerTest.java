@@ -14,35 +14,45 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.epam.internship.controller.UserController;
 import com.epam.internship.dto.User;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = {UserController.class})
-public class UserTest {
+public class UserControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private UserService userService;
+	private UserService systemUnderTest;
 	
 	private User user1;
 	private User user2;
 	
+	
 	@Before
 	public void setUp(){
+		//Given
 		user1 = User.builder().name("Mr Brown").email("brown@test.com").build();
 		user2 = User.builder().name("Mr green").email("green@test.com").build();
 	}
 
 	@Test
 	public void shouldReturnUsers() throws Exception {
-		Mockito.when(userService.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
-		System.out.println(user1.toString());
-		mockMvc.perform(MockMvcRequestBuilders.get("/users")).andDo(MockMvcResultHandlers.print())
+		//When
+		Mockito.when(systemUnderTest.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
+		//Then
+		mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.content().string("[" + user1.toString() + "," + user2.toString() + "]"));
+				.andExpect(jsonPath("$[:1].name").value(user1.getName()))
+				.andExpect(jsonPath("$[:1].email").value(user1.getEmail()))
+				.andExpect(jsonPath("$[1:2].name").value(user2.getName()))
+				.andExpect(jsonPath("$[1:2].email").value(user2.getEmail()));
+				
 	}
+	
 }
