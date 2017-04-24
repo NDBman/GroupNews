@@ -27,7 +27,7 @@ public class UserControllerTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private UserService systemUnderTest;
+	private UserService userService;
 	
 	private User user1;
 	private User user2;
@@ -49,7 +49,7 @@ public class UserControllerTest {
 	@Test
 	public void shouldReturnUsers() throws Exception {
 		//When
-		Mockito.when(systemUnderTest.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
+		Mockito.when(userService.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
 		mockMvc.perform(MockMvcRequestBuilders.get("/users")).andDo(MockMvcResultHandlers.print())
 				//Then
 				.andExpect(MockMvcResultMatchers.status().isOk())
@@ -63,7 +63,7 @@ public class UserControllerTest {
 	@Test
 	public void shouldCreateUser() throws Exception{
 		//Given
-		Mockito.when(systemUnderTest.createUser(CREATE_NAME, CREATE_EMAIL)).thenReturn(user3);
+		Mockito.when(userService.createUser(CREATE_NAME, CREATE_EMAIL)).thenReturn(user3);
 		//When
 		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
 				.andDo(MockMvcResultHandlers.print())
