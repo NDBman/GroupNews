@@ -64,10 +64,7 @@ public class UserServiceImpl implements UserService {
 
 	private boolean isEmailValid(String email) {
 		Matcher matcher = pattern.matcher(email);
-		if (matcher.find()) {
-			return true;
-		}
-		return false;
+		return matcher.find();
 	}
 
 }
