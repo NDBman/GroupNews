@@ -1,8 +1,6 @@
 package com.epam.internship;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
@@ -29,7 +28,10 @@ public class UserServiceTest {
 	private final String USER_NAME_2 = "Mr. Green";
 	private final String USER_EMAIL_1 = "brown@test.com";
 	private final String USER_EMAIL_2 = "green@test.com";
+	private final String USER_UNIQUE_NAME = "Joe";
 	private final String USER_UNIQUE_EMAIL = "alma@email.com";
+	private final String EMPTY_STRING = "";
+	private final String INVALID_EMAIL = "almaemail.com";
 
 	@Mock
 	private UserRepository userRepository;
@@ -81,13 +83,19 @@ public class UserServiceTest {
 		assertEquals(USER_UNIQUE_EMAIL, user.getEmail());
 	}
 
-	@Test
-	public void shouldReturnFalseForUniqueEmail() {
-		assertFalse(systemUnderTest.emailAlreadyExists(USER_UNIQUE_EMAIL));
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentExceptionForEmptyName() {
+		systemUnderTest.createUser(EMPTY_STRING, USER_EMAIL_1);
 	}
 
-	@Test
-	public void shouldReturnFalseForExistingEmail() {
-		assertTrue(systemUnderTest.emailAlreadyExists(USER_EMAIL_1));
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentForInvalidEmail() {
+		systemUnderTest.createUser(USER_NAME_1, INVALID_EMAIL);
 	}
+
+	@Test(expected = DataIntegrityViolationException.class)
+	public void shouldThrowDataIntegrityViolationExceptionForAlreadyExistingEmail() {
+		systemUnderTest.createUser(USER_UNIQUE_NAME, USER_EMAIL_1);
+	}
+
 }

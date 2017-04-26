@@ -10,6 +10,4 @@ public interface UserService {
 
 	List<User> getAllUsers();
 
-	boolean emailAlreadyExists(String email);
-
 }

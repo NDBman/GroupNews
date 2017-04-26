@@ -52,8 +52,7 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	@Override
-	public boolean emailAlreadyExists(String email) {
+	private boolean emailAlreadyExists(String email) {
 		for (UserEntity userEntity : userRepository.findAll()) {
 			if (userEntity.getEmail().equals(email)) {
 				return true;
