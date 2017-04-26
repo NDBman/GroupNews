@@ -31,7 +31,6 @@
 		<app.version>0.0.1-SNAPSHOT</app.version>
 	</properties>
 
-
 	<build>
 		<plugins>
 			<plugin>
@@ -91,5 +90,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
