@@ -6,6 +6,8 @@ import com.epam.internship.dto.User;
 
 public interface UserService {
 
-	public User createUser(String name, String email);
-	public List<User> getAllUsers();
+	User createUser(String name, String email);
+
+	List<User> getAllUsers();
+
 }

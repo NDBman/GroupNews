@@ -11,22 +11,27 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
 import com.epam.internship.impl.UserServiceImpl;
 import com.epam.internship.repo.UserRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
 	private final String USER_NAME_1 = "Mr. Brown";
 	private final String USER_NAME_2 = "Mr. Green";
 	private final String USER_EMAIL_1 = "brown@test.com";
 	private final String USER_EMAIL_2 = "green@test.com";
+	private final String USER_UNIQUE_NAME = "Joe";
+	private final String USER_UNIQUE_EMAIL = "alma@email.com";
+	private final String EMPTY_STRING = "";
+	private final String INVALID_EMAIL = "almaemail.com";
 
 	@Mock
 	private UserRepository userRepository;
@@ -45,7 +50,7 @@ public class UserServiceTest {
 
 	@Before
 	public void setUp() {
-		//Given
+		// Given
 		userEntity1 = UserEntity.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
 		userEntity2 = UserEntity.builder().name(USER_NAME_2).email(USER_EMAIL_2).build();
 		user1 = User.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
@@ -60,9 +65,9 @@ public class UserServiceTest {
 
 	@Test
 	public void shoudlReturnAllUsers() {
-		//When
+		// When
 		List<User> users = systemUnderTest.getAllUsers();
-		//Then
+		// Then
 		assertEquals(users.get(0).getName(), USER_NAME_1);
 		assertEquals(users.get(0).getEmail(), USER_EMAIL_1);
 		assertEquals(users.get(1).getName(), USER_NAME_2);
@@ -71,10 +76,26 @@ public class UserServiceTest {
 
 	@Test
 	public void shouldCreateUser() {
-		//When
-		User user = systemUnderTest.createUser(USER_NAME_1, USER_EMAIL_1);
-		//Then
+		// When
+		User user = systemUnderTest.createUser(USER_NAME_1, USER_UNIQUE_EMAIL);
+		// Then
 		assertEquals(USER_NAME_1, user.getName());
-		assertEquals(USER_EMAIL_1, user.getEmail());
+		assertEquals(USER_UNIQUE_EMAIL, user.getEmail());
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentExceptionForEmptyName() {
+		systemUnderTest.createUser(EMPTY_STRING, USER_EMAIL_1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentForInvalidEmail() {
+		systemUnderTest.createUser(USER_NAME_1, INVALID_EMAIL);
+	}
+
+	@Test(expected = DataIntegrityViolationException.class)
+	public void shouldThrowDataIntegrityViolationExceptionForAlreadyExistingEmail() {
+		systemUnderTest.createUser(USER_UNIQUE_NAME, USER_EMAIL_1);
+	}
+
 }
