@@ -40,6 +40,7 @@
 					<argLine>@{argLine}</argLine>
 					<includes>
 						<include>**/*IT.java</include>
+						<include>**/*Test.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -50,7 +51,6 @@
 				<configuration>
 					<excludes>
 						<exclude>com/epam/internship/dto/**/*</exclude>
-						<exclude>com/epam/internship/converter/**/*</exclude>
 						<exclude>**/*/GroupNewsApplication.*</exclude>
 					</excludes>
 					<rules>
