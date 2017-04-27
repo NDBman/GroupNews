@@ -55,8 +55,9 @@ public class UserControllerTest {
 
 	@Test
 	public void shouldReturnUsers() throws Exception {
-		// When
+		// Given
 		Mockito.when(userService.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
+		// When
 		mockMvc.perform(MockMvcRequestBuilders.get("/users")).andDo(MockMvcResultHandlers.print())
 				// Then
 				.andExpect(MockMvcResultMatchers.status().isOk())
