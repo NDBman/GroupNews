@@ -51,6 +51,7 @@
 				<configuration>
 					<excludes>
 						<exclude>com/epam/internship/dto/**/*</exclude>
+						<exclude>com/epam/internship/entity/**/*</exclude>
 						<exclude>**/*/GroupNewsApplication.*</exclude>
 					</excludes>
 					<rules>
