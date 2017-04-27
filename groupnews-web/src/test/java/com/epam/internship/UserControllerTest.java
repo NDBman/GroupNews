@@ -72,7 +72,8 @@ public class UserControllerTest {
 		// Given
 		Mockito.when(userService.createUser(CREATE_NAME, CREATE_EMAIL)).thenReturn(user3);
 		// When
-		mockMvc.perform(MockMvcRequestBuilders.post("/users/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/users/new").param("name", CREATE_NAME).param("email", CREATE_EMAIL))
 				.andDo(MockMvcResultHandlers.print())
 				// Then
 				.andExpect(MockMvcResultMatchers.status().isOk())
@@ -81,37 +82,22 @@ public class UserControllerTest {
 	}
 
 	@Test
-	public void shouldReturnBadRequestStatus() throws Exception {
-		// When
-		mockMvc.perform(MockMvcRequestBuilders.post("/new").param("name", "").param("email", CREATE_EMAIL))
-				.andDo(MockMvcResultHandlers.print())
-				// Then
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
-	}
-
-
-	@Test
 	public void shouldReturnSingleUser() throws Exception {
 		// Given
 		Mockito.when(userService.getUserById(USER_ID_1)).thenReturn(user1);
 		// When
 		mockMvc.perform(MockMvcRequestBuilders.get("/users/1")).andDo(MockMvcResultHandlers.print())
+				// Then
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(USER_NAME_1))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(USER_EMAIL_1))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
-	public void shoudlReturnNotFoundStatus() throws Exception {
-		// When
-		mockMvc.perform(MockMvcRequestBuilders.get("/users/1")).andDo(MockMvcResultHandlers.print())
-				// Then
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
-	}
-
-	@Test
 	public void shouldReturnBadRequestStatusForInvalidPathVariable() throws Exception {
+		// When
 		mockMvc.perform(MockMvcRequestBuilders.get("/users/pistike")).andDo(MockMvcResultHandlers.print())
+				// Then
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 }
