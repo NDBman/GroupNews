@@ -16,4 +16,8 @@ public class UserEntityBuilderIT {
 		assertEquals(USER_ID, userEntity.getId());
 	}
 	
+	@Test
+	public void toStringsShouldEqual(){
+		assertEquals(UserEntity.builder().toString(), UserEntity.builder().toString());
+	}
 }
