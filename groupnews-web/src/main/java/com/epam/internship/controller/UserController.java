@@ -28,10 +28,10 @@ public class UserController {
 	public List<User> getUsers() {
 		return userService.getAllUsers();
 	}
-	
-	@PostMapping(value="users/new")
-	public ResponseEntity<User> registerUser(@RequestParam String name, @RequestParam String email){
-		return new ResponseEntity<User>(userService.createUser(name, email),HttpStatus.OK);
+
+	@PostMapping(value = "users/new")
+	public ResponseEntity<User> registerUser(@RequestParam String name, @RequestParam String email) {
+		return new ResponseEntity<User>(userService.createUser(name, email), HttpStatus.OK);
 	}
 
 	@GetMapping("users/{id}")

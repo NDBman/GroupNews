@@ -112,11 +112,11 @@ public class UserServiceTest {
 		assertEquals(USER_NAME_1, user.getName());
 		assertEquals(USER_EMAIL_1, user.getEmail());
 	}
-	
+
 	@Test(expected = NotFoundException.class)
 	public void shouldThrowNotFoundException() throws NotFoundException {
 		User user = systemUnderTest.getUserById(NOT_EXISTING_USER_ID);
 		System.out.println(user);
 	}
-	
+
 }

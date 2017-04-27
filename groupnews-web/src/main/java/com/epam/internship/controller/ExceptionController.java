@@ -22,10 +22,10 @@ public class ExceptionController {
 	public void handleConflict() {
 
 	}
-	
+
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(NotFoundException.class)
-	public void handleNotFound(){
-		
+	public void handleNotFound() {
+
 	}
 }

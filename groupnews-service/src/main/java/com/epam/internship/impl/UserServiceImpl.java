@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserById(Long id) throws NotFoundException {
 		User user = conversionService.convert(userRepository.findOne(id), User.class);
-		if(user == null){
+		if (user == null) {
 			throw new NotFoundException("User is not found");
 		}
 		return user;

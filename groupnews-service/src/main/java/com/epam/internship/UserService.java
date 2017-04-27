@@ -8,7 +8,6 @@ import javassist.NotFoundException;
 
 public interface UserService {
 
-
 	User createUser(String name, String email);
 
 	List<User> getAllUsers();
