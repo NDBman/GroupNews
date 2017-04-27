@@ -15,6 +15,8 @@ import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
 import com.epam.internship.repo.UserRepository;
 
+import javassist.NotFoundException;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -67,8 +69,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserById(Long id) {
-		return conversionService.convert(userRepository.findOne(id), User.class);
+	public User getUserById(Long id) throws NotFoundException {
+		User user = conversionService.convert(userRepository.findOne(id), User.class);
+		if(user == null){
+			throw new NotFoundException("User is not found");
+		}
+		return user;
 	}
 
 }

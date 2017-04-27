@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.epam.internship.dto.User;
 
+import javassist.NotFoundException;
+
 public interface UserService {
 
 
@@ -11,6 +13,6 @@ public interface UserService {
 
 	List<User> getAllUsers();
 
-	public User getUserById(Long id);
+	User getUserById(Long id) throws NotFoundException;
 
 }

@@ -21,10 +21,13 @@ import com.epam.internship.entity.UserEntity;
 import com.epam.internship.impl.UserServiceImpl;
 import com.epam.internship.repo.UserRepository;
 
+import javassist.NotFoundException;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
 	private final Long USER_ID_1 = 1L;
+	private final Long NOT_EXISTING_USER_ID = 10L;
 	private final String USER_NAME_1 = "Mr. Brown";
 	private final String USER_NAME_2 = "Mr. Green";
 	private final String USER_EMAIL_1 = "brown@test.com";
@@ -100,7 +103,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void shouldReturnUserForMatchingId() {
+	public void shouldReturnUserForMatchingId() throws NotFoundException {
 		// Given
 		Mockito.when(conversionService.convert(userRepository.findOne(USER_ID_1), User.class)).thenReturn(user1);
 		// When
@@ -108,6 +111,12 @@ public class UserServiceTest {
 		// Then
 		assertEquals(USER_NAME_1, user.getName());
 		assertEquals(USER_EMAIL_1, user.getEmail());
+	}
+	
+	@Test(expected = NotFoundException.class)
+	public void shouldThrowNotFoundException() throws NotFoundException {
+		User user = systemUnderTest.getUserById(NOT_EXISTING_USER_ID);
+		System.out.println(user);
 	}
 	
 }
