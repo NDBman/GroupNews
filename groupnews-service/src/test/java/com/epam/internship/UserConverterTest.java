@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.epam.internship.converter.UserConverter;
 import com.epam.internship.dto.User;
-import com.epam.internship.entity.UserEntity;;
+import com.epam.internship.entity.UserEntity;
 
 public class UserConverterTest {
 
