@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 import com.epam.internship.UserService;
 import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
+import com.epam.internship.exception.UserDoesNotExistsException;
 import com.epam.internship.repo.UserRepository;
-
-import javassist.NotFoundException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,12 +68,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserById(Long id) throws NotFoundException {
-		User user = conversionService.convert(userRepository.findOne(id), User.class);
-		if (user == null) {
-			throw new NotFoundException("User is not found");
+	public User getUserById(Long id) {
+		UserEntity userEntity = userRepository.findOne(id);
+		if (userEntity == null) {
+			throw new UserDoesNotExistsException();
 		}
-		return user;
+		return conversionService.convert(userEntity, User.class);
 	}
 
 }

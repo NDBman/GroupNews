@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javassist.NotFoundException;
+import com.epam.internship.exception.UserDoesNotExistsException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -24,7 +24,7 @@ public class ExceptionController {
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler(NotFoundException.class)
+	@ExceptionHandler(UserDoesNotExistsException.class)
 	public void handleNotFound() {
 
 	}

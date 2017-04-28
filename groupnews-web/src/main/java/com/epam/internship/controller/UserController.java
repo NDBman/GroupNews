@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.epam.internship.UserService;
 import com.epam.internship.dto.User;
 
-import javassist.NotFoundException;
-
 @RestController
 @RequestMapping("/")
 public class UserController {
@@ -35,7 +33,7 @@ public class UserController {
 	}
 
 	@GetMapping("users/{id}")
-	public ResponseEntity<User> getSingleUser(@PathVariable("id") Long id) throws NotFoundException {
-		return new ResponseEntity<User>(userService.getUserById(id), HttpStatus.OK);
+	public User getSingleUser(@PathVariable("id") Long id) {
+		return userService.getUserById(id);
 	}
 }
