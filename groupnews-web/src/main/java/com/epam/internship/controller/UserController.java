@@ -37,7 +37,7 @@ public class UserController {
 		return new ResponseEntity<User>(userService.createUser(name, email), HttpStatus.OK);
 	}
 
-	@GetMapping("users/{id}")
+	@GetMapping("/{id}")
 	public User getSingleUser(@PathVariable("id") Long id) {
 		return userService.getUserById(id);
 	}
