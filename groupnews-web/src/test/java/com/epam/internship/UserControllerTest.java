@@ -29,6 +29,9 @@ public class UserControllerTest {
 
 	@MockBean
 	private UserService userService;
+	
+	@MockBean
+	private GroupService groupService;
 
 	private User user1;
 	private User user2;
