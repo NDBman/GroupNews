@@ -18,6 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
+import com.epam.internship.exception.UserDoesNotExistsException;
 import com.epam.internship.impl.UserServiceImpl;
 import com.epam.internship.repo.UserRepository;
 
@@ -25,6 +26,7 @@ import com.epam.internship.repo.UserRepository;
 public class UserServiceTest {
 
 	private final Long USER_ID_1 = 1L;
+	private final Long NOT_EXISTING_USER_ID = 10L;
 	private final String USER_NAME_1 = "Mr. Brown";
 	private final String USER_NAME_2 = "Mr. Green";
 	private final String USER_EMAIL_1 = "brown@test.com";
@@ -111,4 +113,8 @@ public class UserServiceTest {
 		assertEquals(USER_EMAIL_1, user.getEmail());
 	}
 
+	@Test(expected = UserDoesNotExistsException.class)
+	public void shouldThrowNotFoundException() {
+		systemUnderTest.getUserById(NOT_EXISTING_USER_ID);
+	}
 }
