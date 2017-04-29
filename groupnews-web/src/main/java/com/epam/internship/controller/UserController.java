@@ -12,22 +12,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.epam.internship.GroupService;
 import com.epam.internship.UserService;
+import com.epam.internship.dto.Group;
 import com.epam.internship.dto.User;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("users")
+	@Autowired
+	private GroupService groupService;
+
+	@GetMapping
 	public List<User> getUsers() {
 		return userService.getAllUsers();
 	}
 
-	@PostMapping(value = "users/new")
+	@PostMapping("/new")
 	public ResponseEntity<User> registerUser(@RequestParam String name, @RequestParam String email) {
 		return new ResponseEntity<User>(userService.createUser(name, email), HttpStatus.OK);
 	}
@@ -35,5 +40,10 @@ public class UserController {
 	@GetMapping("users/{id}")
 	public User getSingleUser(@PathVariable("id") Long id) {
 		return userService.getUserById(id);
+	}
+
+	@PostMapping("/{userId}/groups")
+	public Group createGroup(@PathVariable("userId") Long userId, String title, String description) {
+		return groupService.ceateGoup(userId, title, description);
 	}
 }
