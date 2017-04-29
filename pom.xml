@@ -31,6 +31,16 @@
 		<app.version>0.0.1-SNAPSHOT</app.version>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.5</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -91,4 +101,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
