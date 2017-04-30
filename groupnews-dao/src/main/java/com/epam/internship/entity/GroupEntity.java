@@ -1,5 +1,6 @@
 package com.epam.internship.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class GroupEntity {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(targetEntity=UserEntity.class)
+	@OneToOne(cascade=CascadeType.ALL)
 	private UserEntity createdBy;
 	@Column(nullable = false, length = 70)
 	private String title;
