@@ -4,5 +4,5 @@ import com.epam.internship.dto.Group;
 
 public interface GroupService {
 
-	Group ceateGoup(Long userId, String title, String description);
+	Group createGoup(Long userId, String title, String description);
 }
