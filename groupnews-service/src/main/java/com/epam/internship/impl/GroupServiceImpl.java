@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.epam.internship.GroupService;
 import com.epam.internship.UserService;
 import com.epam.internship.dto.Group;
-import com.epam.internship.dto.User;
 import com.epam.internship.entity.GroupEntity;
+import com.epam.internship.entity.UserEntity;
 import com.epam.internship.repo.GroupRepository;
 
 @Service
@@ -27,11 +27,12 @@ public class GroupServiceImpl implements GroupService {
 	private ConversionService conversionService;
 
 	@Override
-	public Group ceateGoup(Long userId, String title, String description) {
-		Group group = Group.builder().title(title).description(description)
-				.createdBy(conversionService.convert(userService.getUserById(userId), User.class)).build();
-		groupRepository.save(conversionService.convert(group, GroupEntity.class));
-		return group;
+	public Group createGoup(Long userId, String title, String description) {
+		UserEntity userEntity = conversionService.convert(userService.getUserById(userId), UserEntity.class);
+		GroupEntity groupEntity = GroupEntity.builder().title(title).description(description).createdBy(userEntity)
+				.build();
+		groupEntity = groupRepository.save(groupEntity);
+		return conversionService.convert(groupEntity, Group.class);
 	}
 
 }
