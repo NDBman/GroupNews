@@ -18,12 +18,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.epam.internship.dto.User;
 import com.epam.internship.entity.UserEntity;
+import com.epam.internship.exception.UserDoesNotExistsException;
 import com.epam.internship.impl.UserServiceImpl;
 import com.epam.internship.repo.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
+	private final Long USER_ID_1 = 1L;
+	private final Long NOT_EXISTING_USER_ID = 10L;
 	private final String USER_NAME_1 = "Mr. Brown";
 	private final String USER_NAME_2 = "Mr. Green";
 	private final String USER_EMAIL_1 = "brown@test.com";
@@ -98,4 +101,20 @@ public class UserServiceTest {
 		systemUnderTest.createUser(USER_UNIQUE_NAME, USER_EMAIL_1);
 	}
 
+	@Test
+	public void shouldReturnUserForMatchingId() {
+		// Given
+		Mockito.when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity1);
+		Mockito.when(conversionService.convert(userEntity1, User.class)).thenReturn(user1);
+		// When
+		User user = systemUnderTest.getUserById(USER_ID_1);
+		// Then
+		assertEquals(USER_NAME_1, user.getName());
+		assertEquals(USER_EMAIL_1, user.getEmail());
+	}
+
+	@Test(expected = UserDoesNotExistsException.class)
+	public void shouldThrowNotFoundException() {
+		systemUnderTest.getUserById(NOT_EXISTING_USER_ID);
+	}
 }
