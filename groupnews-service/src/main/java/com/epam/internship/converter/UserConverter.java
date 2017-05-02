@@ -11,7 +11,7 @@ public class UserConverter implements Converter<User, UserEntity> {
 
 	@Override
 	public UserEntity convert(User source) {
-		return UserEntity.builder().name(source.getName()).email(source.getEmail()).build();
+		return UserEntity.builder().id(source.getId()).name(source.getName()).email(source.getEmail()).build();
 	}
 
 }
