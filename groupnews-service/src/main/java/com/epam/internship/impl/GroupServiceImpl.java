@@ -41,7 +41,7 @@ public class GroupServiceImpl implements GroupService {
 
 		GroupEntity groupEntity = GroupEntity.builder().title(title).description(description).createdBy(userEntity)
 				.build();
-		groupEntity = groupRepository.save(groupEntity);
+		groupRepository.save(groupEntity);
 		return conversionService.convert(groupEntity, Group.class);
 	}
 
