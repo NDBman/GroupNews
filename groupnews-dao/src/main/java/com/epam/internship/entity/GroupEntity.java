@@ -16,16 +16,16 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@Entity
-@Table(name="groups")
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "groups")
 public class GroupEntity {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private UserEntity createdBy;
 	@Column(nullable = false, length = 70)
 	private String title;
