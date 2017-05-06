@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -92,6 +93,27 @@ public class UserControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(CREATE_NAME))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(CREATE_EMAIL));
+	}
+	
+	@Test
+	public void shouldReturnBadRequestStatus() throws Exception {
+		// Given
+		Mockito.when(userService.createUser("", "")).thenThrow(new IllegalArgumentException());
+		// When
+		mockMvc.perform(MockMvcRequestBuilders.post("/users/new").param("name", "").param("email", ""))
+				// Then
+				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+
+	@Test
+	public void shouldReturnConflictStatus() throws Exception {
+		// Given
+		Mockito.when(userService.createUser("", ""))
+				.thenThrow(new DataIntegrityViolationException("This email is already used."));
+		// When
+		mockMvc.perform(MockMvcRequestBuilders.post("/users/new").param("name", "").param("email", ""))
+				// Then
+				.andExpect(MockMvcResultMatchers.status().isConflict());
 	}
 
 	@Test
