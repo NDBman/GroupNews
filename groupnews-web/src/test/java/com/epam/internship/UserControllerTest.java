@@ -94,7 +94,7 @@ public class UserControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(CREATE_NAME))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(CREATE_EMAIL));
 	}
-	
+
 	@Test
 	public void shouldReturnBadRequestStatus() throws Exception {
 		// Given
@@ -138,12 +138,12 @@ public class UserControllerTest {
 
 	@Test
 	public void shoudlReturnGroupWithGivenFields() throws Exception {
-		//Given
+		// Given
 		Group group = Group.builder().id(1L).createdBy(user1).title(GROUP_TITLE).description(GROUP_DESCRIPION).build();
 		when(groupService.createGoup(USER_ID_1, GROUP_TITLE, GROUP_DESCRIPION)).thenReturn(group);
-		//When
+		// When
 		mockMvc.perform(post("/users/1/groups").param("title", GROUP_TITLE).param("description", GROUP_DESCRIPION))
-				//Then
+				// Then
 				.andExpect(jsonPath("$.id").value(1L)).andExpect(jsonPath("$.title").value(GROUP_TITLE))
 				.andExpect(jsonPath("$.description").value(GROUP_DESCRIPION))
 				.andExpect(jsonPath("$.createdBy.id").value(USER_ID_1))
@@ -154,11 +154,11 @@ public class UserControllerTest {
 
 	@Test
 	public void shouldReturnBadRequestWhenUserDoesNotExist() throws Exception {
-		//Given
+		// Given
 		when(groupService.createGoup(10L, GROUP_TITLE, GROUP_DESCRIPION)).thenThrow(new UserDoesNotExistsException());
-		//When
+		// When
 		mockMvc.perform(post("/users/10/groups").param("title", GROUP_TITLE).param("description", GROUP_DESCRIPION))
-				//Then
+				// Then
 				.andExpect(status().isNotFound());
 	}
 
@@ -171,22 +171,22 @@ public class UserControllerTest {
 
 	@Test
 	public void shouldReturnBadRequestWhenGroupTitleIsLongerThanAllowed() throws Exception {
-		//Given
+		// Given
 		String longTitle = RandomStringUtils.random(71);
 		when(groupService.createGoup(USER_ID_1, longTitle, GROUP_DESCRIPION)).thenThrow(new IllegalArgumentException());
-		//When
+		// When
 		mockMvc.perform(post("/users/1/groups").param("title", longTitle).param("description", GROUP_DESCRIPION))
-				//Then
+				// Then
 				.andExpect(status().isBadRequest());
 	}
 
 	public void shouldReturnBadRequestWhenGroupDescIsLongerThanAllowed() throws Exception {
-		//Given
+		// Given
 		String longDesc = RandomStringUtils.random(2001);
 		when(groupService.createGoup(USER_ID_1, GROUP_TITLE, longDesc));
-		//When
+		// When
 		mockMvc.perform(post("/users/1/groups").param("title", GROUP_TITLE).param("description", GROUP_DESCRIPION))
-				//Then
+				// Then
 				.andExpect(status().isBadRequest());
 	}
 

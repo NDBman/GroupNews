@@ -43,7 +43,8 @@ public class UserController {
 	}
 
 	@PostMapping("/{userId}/groups")
-	public Group createGroup(@PathVariable("userId") Long userId,@RequestParam String title,@RequestParam String description) {
+	public Group createGroup(@PathVariable("userId") Long userId, @RequestParam String title,
+			@RequestParam String description) {
 		return groupService.createGoup(userId, title, description);
 	}
 }

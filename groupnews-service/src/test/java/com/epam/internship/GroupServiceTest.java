@@ -62,30 +62,30 @@ public class GroupServiceTest {
 	}
 
 	@Test(expected = UserDoesNotExistsException.class)
-	public void shouldFailWhenUserDoesNotExist(){
+	public void shouldFailWhenUserDoesNotExist() {
 		systemUnderTest.createGoup(USER_ID, GROUP_TITLE, GROUP_DESCRIPTION);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailWhenTitleIsAnEmptyString(){
+	public void shouldFailWhenTitleIsAnEmptyString() {
 		when(userRepository.findOne(USER_ID)).thenReturn(new UserEntity());
 		systemUnderTest.createGoup(USER_ID, "", GROUP_DESCRIPTION);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
-	public void shouldFailWhenTitleIsNull(){
+	public void shouldFailWhenTitleIsNull() {
 		when(userRepository.findOne(USER_ID)).thenReturn(new UserEntity());
 		systemUnderTest.createGoup(USER_ID, null, GROUP_DESCRIPTION);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailWhenTitleCharacterNumberExceeds70(){
+	public void shouldFailWhenTitleCharacterNumberExceeds70() {
 		when(userRepository.findOne(USER_ID)).thenReturn(new UserEntity());
 		systemUnderTest.createGoup(USER_ID, RandomStringUtils.random(71), GROUP_DESCRIPTION);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailWhenDescCharacterNumberExceeds2000(){
+	public void shouldFailWhenDescCharacterNumberExceeds2000() {
 		when(userRepository.findOne(USER_ID)).thenReturn(new UserEntity());
 		systemUnderTest.createGoup(USER_ID, GROUP_TITLE, RandomStringUtils.random(2001));
 	}

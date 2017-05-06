@@ -33,7 +33,7 @@ public class GroupRepositoryIT {
 	private static GroupEntity groupEntity2;
 
 	private static final Long GROUP_ID_1 = 1L;
-	
+
 	private static final String GROUP_TITLE_2 = "Group";
 	private static final String GROUP_DESCRIPTION_2 = "Group description";
 
