@@ -1,10 +1,13 @@
 package com.epam.internship.impl;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Service;
 
 import com.epam.internship.GroupService;
@@ -43,6 +46,18 @@ public class GroupServiceImpl implements GroupService {
 				.build();
 		groupRepository.save(groupEntity);
 		return conversionService.convert(groupEntity, Group.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Group> listGroupsBelongingToUser(Long userId) {
+		UserEntity userEntity = userRepository.findOne(userId);
+		if(userEntity == null){
+			throw new UserDoesNotExistsException();
+		}
+		return (List<Group>) conversionService.convert(groupRepository.findByCreatedBy(userEntity),
+				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(GroupEntity.class)),
+				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(Group.class)));
 	}
 
 }
