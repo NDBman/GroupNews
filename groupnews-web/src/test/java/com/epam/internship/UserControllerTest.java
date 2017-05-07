@@ -183,9 +183,9 @@ public class UserControllerTest {
 	public void shouldReturnBadRequestWhenGroupDescIsLongerThanAllowed() throws Exception {
 		// Given
 		String longDesc = RandomStringUtils.random(2001);
-		when(groupService.createGoup(USER_ID_1, GROUP_TITLE, longDesc));
+		when(groupService.createGoup(USER_ID_1, GROUP_TITLE, longDesc)).thenThrow(new IllegalArgumentException());
 		// When
-		mockMvc.perform(post("/users/1/groups").param("title", GROUP_TITLE).param("description", GROUP_DESCRIPION))
+		mockMvc.perform(post("/users/1/groups").param("title", GROUP_TITLE).param("description", longDesc))
 				// Then
 				.andExpect(status().isBadRequest());
 	}
