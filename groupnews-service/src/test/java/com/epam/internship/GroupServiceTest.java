@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.TypeDescriptor;
 
 import com.epam.internship.dto.Group;
+import com.epam.internship.dto.User;
 import com.epam.internship.entity.GroupEntity;
 import com.epam.internship.entity.UserEntity;
 import com.epam.internship.exception.UserDoesNotExistsException;
@@ -43,6 +49,12 @@ public class GroupServiceTest {
 	private final String GROUP_TITLE = "Group Title";
 	private final String GROUP_DESCRIPTION = "Group description";
 	private final Long USER_ID = 1L;
+
+	private final String GROUP_TITLE_2 = "Group title 2";
+	private final String GROUP_DESCRIPTION_2 = "Group desc 2";
+
+	private final Long GROUP_ID_1 = 1L;
+	private final Long GROUP_ID_2 = 2L;
 
 	@Test
 	public void shouldCreateGroupWithGivenFields() {
@@ -88,5 +100,55 @@ public class GroupServiceTest {
 	public void shouldFailWhenDescCharacterNumberExceeds2000() {
 		when(userRepository.findOne(USER_ID)).thenReturn(new UserEntity());
 		systemUnderTest.createGoup(USER_ID, GROUP_TITLE, RandomStringUtils.random(2001));
+	}
+
+	@Test
+	public void shouldReturnListOfGroupsBelongingToUser() {
+		// Given
+		UserEntity userEntity = UserEntity.builder().id(USER_ID).build();
+		GroupEntity groupEntity1 = GroupEntity.builder().id(GROUP_ID_1).title(GROUP_TITLE)
+				.description(GROUP_DESCRIPTION).createdBy(userEntity).build();
+		GroupEntity groupEntity2 = GroupEntity.builder().id(GROUP_ID_2).title(GROUP_TITLE_2)
+				.description(GROUP_DESCRIPTION_2).createdBy(userEntity).build();
+		User user = User.builder().id(USER_ID).build();
+		Group group1 = Group.builder().id(GROUP_ID_1).title(GROUP_TITLE).description(GROUP_DESCRIPTION).createdBy(user)
+				.build();
+		Group group2 = Group.builder().id(GROUP_ID_2).title(GROUP_TITLE_2).description(GROUP_DESCRIPTION_2)
+				.createdBy(user).build();
+		List<Group> expectedGroups = new ArrayList<>();
+		expectedGroups.addAll(Arrays.asList(group1, group2));
+		when(userRepository.findOne(USER_ID)).thenReturn(userEntity);
+		when(groupRepository.findByCreatedBy(userEntity)).thenReturn(Arrays.asList(groupEntity1, groupEntity2));
+		when(conversionService.convert(groupRepository.findByCreatedBy(userEntity),
+				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(GroupEntity.class)),
+				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(Group.class))))
+						.thenReturn(Arrays.asList(group1, group2));
+		// When
+		List<Group> groups = systemUnderTest.listGroupsBelongingToUser(USER_ID);
+		// Then
+		for (int i = 0; i < groups.size(); i++) {
+			assertEquals(expectedGroups.get(i), groups.get(i));
+		}
+	}
+
+	@Test(expected = UserDoesNotExistsException.class)
+	public void shouldThrowUserDoesNotExistException() {
+		systemUnderTest.listGroupsBelongingToUser(USER_ID);
+	}
+
+	@Test
+	public void shouldReturnEmptyListWhenUserDoesNotHaveCreatedGroups() {
+		// Given
+		UserEntity userEntity = UserEntity.builder().id(USER_ID).build();
+		when(userRepository.findOne(USER_ID)).thenReturn(userEntity);
+		when(groupRepository.findByCreatedBy(userEntity)).thenReturn(new ArrayList<GroupEntity>());
+		when(conversionService.convert(groupRepository.findByCreatedBy(userEntity),
+				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(GroupEntity.class)),
+				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(Group.class))))
+						.thenReturn(new ArrayList<Group>());
+		// When
+		List<Group> groups = systemUnderTest.listGroupsBelongingToUser(USER_ID);
+		// Then
+		assertEquals(0, groups.size());
 	}
 }
