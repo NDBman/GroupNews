@@ -103,6 +103,7 @@ public class GroupControllerTest {
 	@Test
 	public void shouldReturnListOfGroupsBelongingToUser() throws Exception {
 		// Given
+		user1 = User.builder().id(USER_ID_1).name(USER_NAME_1).email(USER_EMAIL_1).build();
 		Group group1 = Group.builder().id(1L).title(GROUP_TITLE).description(GROUP_DESCRIPION).createdBy(user1).build();
 		Group group2 = Group.builder().id(GROUP_ID_2).title(GROUP_TITLE_2).description(GROUP_DESCRIPION_2)
 				.createdBy(user1).build();
