@@ -110,14 +110,14 @@ public class GroupControllerTest {
 		// When
 		mockMvc.perform(get("/users/1/groups"))
 				// Then
-				// .andExpect(jsonPath("$[:1].id").value(group1.getId()))
-				// .andExpect(jsonPath("$[:1].createdBy.id").value(group1.getCreatedBy().getId()))
+				.andExpect(jsonPath("$[:1].id").value(group1.getId().intValue()))
+				.andExpect(jsonPath("$[:1].createdBy.id").value(group1.getCreatedBy().getId().intValue()))
 				.andExpect(jsonPath("$[:1].createdBy.name").value(group1.getCreatedBy().getName()))
 				.andExpect(jsonPath("$[:1].createdBy.email").value(group1.getCreatedBy().getEmail()))
 				.andExpect(jsonPath("$[:1].title").value(group1.getTitle()))
 				.andExpect(jsonPath("$[:1].description").value(group1.getDescription()))
-				// .andExpect(jsonPath("$[1:2].id").value(group2.getId()))
-				// .andExpect(jsonPath("$[1:2].createdBy.id").value(group2.getCreatedBy().getId()))
+				.andExpect(jsonPath("$[1:2].id").value(group2.getId().intValue()))
+				.andExpect(jsonPath("$[1:2].createdBy.id").value(group2.getCreatedBy().getId().intValue()))
 				.andExpect(jsonPath("$[1:2].createdBy.name").value(group2.getCreatedBy().getName()))
 				.andExpect(jsonPath("$[1:2].createdBy.email").value(group2.getCreatedBy().getEmail()))
 				.andExpect(jsonPath("$[1:2].title").value(group2.getTitle()))
