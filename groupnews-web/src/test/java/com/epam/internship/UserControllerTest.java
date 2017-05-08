@@ -1,13 +1,9 @@
 package com.epam.internship;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.epam.internship.controller.UserController;
-import com.epam.internship.dto.Group;
 import com.epam.internship.dto.User;
-import com.epam.internship.exception.UserDoesNotExistsException;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = { UserController.class })
@@ -53,9 +47,6 @@ public class UserControllerTest {
 
 	private final String USER_NAME_2 = "Mr green";
 	private final String USER_EMAIL_2 = "green@test.com";
-
-	private final String GROUP_TITLE = "Group title";
-	private final String GROUP_DESCRIPION = "Group Desc";
 
 	@Before
 	public void setUp() {
@@ -134,60 +125,6 @@ public class UserControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/users/pistike")).andDo(MockMvcResultHandlers.print())
 				// Then
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
-	}
-
-	@Test
-	public void shoudlReturnGroupWithGivenFields() throws Exception {
-		// Given
-		Group group = Group.builder().id(1L).createdBy(user1).title(GROUP_TITLE).description(GROUP_DESCRIPION).build();
-		when(groupService.createGoup(USER_ID_1, GROUP_TITLE, GROUP_DESCRIPION)).thenReturn(group);
-		// When
-		mockMvc.perform(post("/users/1/groups").param("title", GROUP_TITLE).param("description", GROUP_DESCRIPION))
-				// Then
-				.andExpect(jsonPath("$.id").value(1L)).andExpect(jsonPath("$.title").value(GROUP_TITLE))
-				.andExpect(jsonPath("$.description").value(GROUP_DESCRIPION))
-				.andExpect(jsonPath("$.createdBy.id").value(USER_ID_1))
-				.andExpect(jsonPath("$.createdBy.name").value(USER_NAME_1))
-				.andExpect(jsonPath("$.createdBy.email").value(USER_EMAIL_1)).andExpect(status().isOk());
-
-	}
-
-	@Test
-	public void shouldReturnBadRequestWhenUserDoesNotExist() throws Exception {
-		// Given
-		when(groupService.createGoup(10L, GROUP_TITLE, GROUP_DESCRIPION)).thenThrow(new UserDoesNotExistsException());
-		// When
-		mockMvc.perform(post("/users/10/groups").param("title", GROUP_TITLE).param("description", GROUP_DESCRIPION))
-				// Then
-				.andExpect(status().isNotFound());
-	}
-
-	@Test
-	public void shouldReturnBadRequestWhenGroupTitleIsBlank() throws Exception {
-		when(groupService.createGoup(USER_ID_1, "", GROUP_DESCRIPION)).thenThrow(new IllegalArgumentException());
-		mockMvc.perform(post("/users/1/groups").param("title", "").param("description", GROUP_DESCRIPION))
-				.andExpect(status().isBadRequest());
-	}
-
-	@Test
-	public void shouldReturnBadRequestWhenGroupTitleIsLongerThanAllowed() throws Exception {
-		// Given
-		String longTitle = RandomStringUtils.random(71);
-		when(groupService.createGoup(USER_ID_1, longTitle, GROUP_DESCRIPION)).thenThrow(new IllegalArgumentException());
-		// When
-		mockMvc.perform(post("/users/1/groups").param("title", longTitle).param("description", GROUP_DESCRIPION))
-				// Then
-				.andExpect(status().isBadRequest());
-	}
-
-	public void shouldReturnBadRequestWhenGroupDescIsLongerThanAllowed() throws Exception {
-		// Given
-		String longDesc = RandomStringUtils.random(2001);
-		when(groupService.createGoup(USER_ID_1, GROUP_TITLE, longDesc)).thenThrow(new IllegalArgumentException());
-		// When
-		mockMvc.perform(post("/users/1/groups").param("title", GROUP_TITLE).param("description", longDesc))
-				// Then
-				.andExpect(status().isBadRequest());
 	}
 
 }
