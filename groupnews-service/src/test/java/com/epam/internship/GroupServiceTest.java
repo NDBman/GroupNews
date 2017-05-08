@@ -1,6 +1,7 @@
 package com.epam.internship;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -126,9 +127,7 @@ public class GroupServiceTest {
 		// When
 		List<Group> groups = systemUnderTest.listGroupsBelongingToUser(USER_ID);
 		// Then
-		for (int i = 0; i < groups.size(); i++) {
-			assertEquals(expectedGroups.get(i), groups.get(i));
-		}
+		assertEquals(expectedGroups, groups);
 	}
 
 	@Test(expected = UserDoesNotExistsException.class)
@@ -149,6 +148,6 @@ public class GroupServiceTest {
 		// When
 		List<Group> groups = systemUnderTest.listGroupsBelongingToUser(USER_ID);
 		// Then
-		assertEquals(0, groups.size());
+		assertTrue(groups.isEmpty());
 	}
 }
