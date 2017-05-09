@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} {%thread} %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>	
+	
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>groupnews.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>groupnews.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="com.epam.internship" level="DEBUG"/>
+	<logger name="org.springframework" level="INFO"/>
+	
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="FILE"/>
+	</root>
+</configuration>
