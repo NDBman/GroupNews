@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,6 +31,9 @@ public class UserControllerTest {
 	@MockBean
 	private UserService userService;
 
+	@MockBean
+	private GroupService groupService;
+
 	private User user1;
 	private User user2;
 	private User user3;
@@ -47,7 +51,7 @@ public class UserControllerTest {
 	@Before
 	public void setUp() {
 		// Given
-		user1 = User.builder().name(USER_NAME_1).email(USER_EMAIL_1).build();
+		user1 = User.builder().id(USER_ID_1).name(USER_NAME_1).email(USER_EMAIL_1).build();
 		user2 = User.builder().name(USER_NAME_2).email(USER_EMAIL_2).build();
 
 		user3 = User.builder().name(CREATE_NAME).email(CREATE_EMAIL).build();
@@ -83,6 +87,27 @@ public class UserControllerTest {
 	}
 
 	@Test
+	public void shouldReturnBadRequestStatus() throws Exception {
+		// Given
+		Mockito.when(userService.createUser("", "")).thenThrow(new IllegalArgumentException());
+		// When
+		mockMvc.perform(MockMvcRequestBuilders.post("/users/new").param("name", "").param("email", ""))
+				// Then
+				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+
+	@Test
+	public void shouldReturnConflictStatus() throws Exception {
+		// Given
+		Mockito.when(userService.createUser("", ""))
+				.thenThrow(new DataIntegrityViolationException("This email is already used."));
+		// When
+		mockMvc.perform(MockMvcRequestBuilders.post("/users/new").param("name", "").param("email", ""))
+				// Then
+				.andExpect(MockMvcResultMatchers.status().isConflict());
+	}
+
+	@Test
 	public void shouldReturnSingleUser() throws Exception {
 		// Given
 		Mockito.when(userService.getUserById(USER_ID_1)).thenReturn(user1);
@@ -101,4 +126,5 @@ public class UserControllerTest {
 				// Then
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
+
 }

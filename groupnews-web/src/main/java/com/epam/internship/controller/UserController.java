@@ -16,24 +16,25 @@ import com.epam.internship.UserService;
 import com.epam.internship.dto.User;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("users")
+	@GetMapping
 	public List<User> getUsers() {
 		return userService.getAllUsers();
 	}
 
-	@PostMapping(value = "users/new")
+	@PostMapping("/new")
 	public ResponseEntity<User> registerUser(@RequestParam String name, @RequestParam String email) {
 		return new ResponseEntity<User>(userService.createUser(name, email), HttpStatus.OK);
 	}
 
-	@GetMapping("users/{id}")
+	@GetMapping("/{id}")
 	public User getSingleUser(@PathVariable("id") Long id) {
 		return userService.getUserById(id);
 	}
+
 }
