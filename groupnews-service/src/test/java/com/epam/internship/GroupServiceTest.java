@@ -116,8 +116,7 @@ public class GroupServiceTest {
 				.build();
 		Group group2 = Group.builder().id(GROUP_ID_2).title(GROUP_TITLE_2).description(GROUP_DESCRIPTION_2)
 				.createdBy(user).build();
-		List<Group> expectedGroups = new ArrayList<>();
-		expectedGroups.addAll(Arrays.asList(group1, group2));
+		List<Group> expectedGroups = Arrays.asList(group1, group2);
 		when(userRepository.findOne(USER_ID)).thenReturn(userEntity);
 		when(groupRepository.findByCreatedBy(userEntity)).thenReturn(Arrays.asList(groupEntity1, groupEntity2));
 		when(conversionService.convert(groupRepository.findByCreatedBy(userEntity),
