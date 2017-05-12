@@ -47,7 +47,7 @@ public class MembershipRepositoryIT {
 	public void shouldReturnSameMembershipWhenSaveIsCalled() {
 		// Given
 		membershipEntity = MembershipEntity.builder().id(ID).member(userRepository.findOne(ID))
-				.groupEntity(groupRepository.findOne(ID)).role(Role.MEMBER).build();
+				.groupEntity(groupRepository.findOne(ID)).role(Role.USER).build();
 		// When
 		MembershipEntity savedMembershipEntity = systemUnderTest.save(membershipEntity);
 		// Then
@@ -103,20 +103,21 @@ public class MembershipRepositoryIT {
 		// Then
 		assertEquals(0, systemUnderTest.count());
 	}
-	
+
 	@Test
-	public void shouldReturnListOfMembershipsBelongingToGivenUser(){
-		//Given
+	public void shouldReturnListOfMembershipsBelongingToGivenUser() {
+		// Given
 		UserEntity userEntity = userRepository.findOne(ID);
 		GroupEntity groupEntity = groupRepository.findOne(ID);
 		membershipEntity = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity).build();
-		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity).role(Role.MEMBER).build();
+		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity)
+				.role(Role.USER).build();
 		systemUnderTest.save(membershipEntity2);
 		systemUnderTest.save(membershipEntity);
-		List<MembershipEntity> expectedMemberships = Arrays.asList(membershipEntity2,membershipEntity);
-		//When
+		List<MembershipEntity> expectedMemberships = Arrays.asList(membershipEntity2, membershipEntity);
+		// When
 		List<MembershipEntity> actualMemberships = systemUnderTest.findByMember(userEntity);
-		//Then
+		// Then
 		assertEquals(expectedMemberships, actualMemberships);
 	}
 }
