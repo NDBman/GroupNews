@@ -2,6 +2,7 @@ package com.epam.internship;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -106,5 +107,20 @@ public class GroupRepositoryIT {
 		systemUnderTest.deleteAll();
 		// Then
 		assertEquals(0, systemUnderTest.count());
+	}
+
+	@Test
+	public void shouldListOfGroupsBelongingToGivenUserWhenFindByCreatedByIsCalled(){
+		//Given
+		UserEntity userEntity = userRepository.findOne(USER_ID);
+		GroupEntity groupEntity = GroupEntity.builder().title(GROUP_TITLE_2).createdBy(userEntity).build();
+		groupEntity2.setCreatedBy(userEntity);
+		systemUnderTest.save(groupEntity);
+		systemUnderTest.save(groupEntity2);
+		List<GroupEntity> expectedList = Arrays.asList(groupEntity,groupEntity2);
+		//When
+		List<GroupEntity> usersCreatedGroups = systemUnderTest.findByCreatedBy(userEntity);
+		//Then
+		assertEquals(expectedList, usersCreatedGroups);
 	}
 }
