@@ -21,14 +21,14 @@ import com.epam.internship.dto.User;
 @RequestMapping("/")
 public class UserController {
 	
-	final static Logger logger = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userService;
 
 	@GetMapping("users")
 	public List<User> getUsers() {
-		logger.debug("Called: getUsers");
+		LOGGER.debug("Called: getUsers");
 		return userService.getAllUsers();
 	}
 
