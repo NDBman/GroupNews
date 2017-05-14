@@ -1,7 +1,9 @@
 package com.epam.internship;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -104,5 +106,42 @@ public class MembershipControllerTest {
 		mockMvc.perform(put("/groups/1/users").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(membersJson))
 				// Then
 				.andExpect(status().isMethodNotAllowed());
+	}
+
+	@Test
+	public void shouldReturnDeletedMembership() throws Exception {
+		// Given
+		when(membershipService.deleteMembership(GROUP_ID, USER_ID)).thenReturn(membership);
+		// When
+		mockMvc.perform(delete("/groups/1/users/1")).andDo(print())
+				// Then
+				.andExpect(jsonPath("$.id").value(membership.getId().intValue()))
+				.andExpect(jsonPath("$.member").value(membership.getMember()))
+				.andExpect(jsonPath("$.group").value(membership.getGroup()))
+				.andExpect(jsonPath("$.role").value(membership.getRole().toString())).andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldReturnNotFoundStatusWhenDeleteUnexistingUser() throws Exception {
+		// Given
+		when(membershipService.deleteMembership(GROUP_ID, 10L)).thenThrow(new UserDoesNotExistsException());
+		// When Then
+		mockMvc.perform(delete("/groups/1/users/10")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void shouldReturnNotFoundStatusWhenDeleteUnexistingGroup() throws Exception {
+		// Given
+		when(membershipService.deleteMembership(10L, USER_ID)).thenThrow(new GroupDoesNotExistsException());
+		// When Then
+		mockMvc.perform(delete("/groups/10/users/1")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void shouldReturnMethodNotAllowedWhenDeleteLastAdmin() throws Exception {
+		// Given
+		when(membershipService.deleteMembership(GROUP_ID, USER_ID)).thenThrow(new LastAdminCannotBeRemovedException());
+		// When Then
+		mockMvc.perform(delete("/groups/1/users/")).andExpect(status().isMethodNotAllowed());
 	}
 }

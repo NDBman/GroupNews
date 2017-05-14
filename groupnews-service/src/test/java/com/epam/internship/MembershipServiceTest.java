@@ -48,7 +48,10 @@ public class MembershipServiceTest {
 	private MembershipServiceImpl systemUnderTest;
 
 	@Captor
-	private ArgumentCaptor<List<MembershipEntity>> membershipCaptor;
+	private ArgumentCaptor<List<MembershipEntity>> membershipsCaptor;
+
+	@Captor
+	private ArgumentCaptor<MembershipEntity> membershipCaptor;
 
 	private final Long USER_ID_1 = 1L;
 	private final String USER_NAME_1 = "Mr. Brown";
@@ -86,8 +89,8 @@ public class MembershipServiceTest {
 		systemUnderTest.addUsersToGroup(GROUP_ID, Arrays.asList(member1, member2));
 
 		// Then
-		verify(membershipRepository).save(membershipCaptor.capture());
-		List<MembershipEntity> actualMembershipEntities = membershipCaptor.getValue();
+		verify(membershipRepository).save(membershipsCaptor.capture());
+		List<MembershipEntity> actualMembershipEntities = membershipsCaptor.getValue();
 		assertEquals(membershipEntities, actualMembershipEntities);
 	}
 
@@ -124,9 +127,9 @@ public class MembershipServiceTest {
 		/// When
 		systemUnderTest.addUsersToGroup(GROUP_ID,
 				Arrays.asList(Member.builder().userId(USER_ID_1).role(Role.ADMIN).build()));
-		verify(membershipRepository).save(membershipCaptor.capture());
+		verify(membershipRepository).save(membershipsCaptor.capture());
 		// Then
-		assertEquals(Role.ADMIN, membershipCaptor.getValue().get(0).getRole());
+		assertEquals(Role.ADMIN, membershipsCaptor.getValue().get(0).getRole());
 	}
 
 	@Test(expected = LastAdminCannotBeRemovedException.class)
@@ -145,5 +148,54 @@ public class MembershipServiceTest {
 		// When
 		systemUnderTest.addUsersToGroup(GROUP_ID,
 				Arrays.asList(Member.builder().userId(USER_ID_1).role(Role.USER).build()));
+	}
+
+	@Test
+	public void shouldDeleteMembership() {
+		// Given
+		UserEntity userEntity = UserEntity.builder().id(USER_ID_1).build();
+		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).build();
+		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity)
+				.groupEntity(groupEntity).role(Role.USER).build();
+		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
+		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
+		when(membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity)).thenReturn(membershipEntity);
+		// When
+		systemUnderTest.deleteMembership(GROUP_ID, USER_ID_1);
+		// Then
+		verify(membershipRepository).delete(membershipCaptor.capture());
+		assertEquals(membershipEntity, membershipCaptor.getValue());
+	}
+
+	@Test(expected = UserDoesNotExistsException.class)
+	public void shouldThrowUserDoesNotExistExceptionWhenDeleteIsCalled() {
+		// Given
+		when(userRepository.findOne(USER_ID_1)).thenReturn(null);
+		// When
+		systemUnderTest.deleteMembership(GROUP_ID, USER_ID_1);
+	}
+
+	@Test(expected = GroupDoesNotExistsException.class)
+	public void shouldThrowGroupDoesNotExistExceptionWhenDeleteIsCalled() {
+		// Given
+		when(userRepository.findOne(USER_ID_1)).thenReturn(new UserEntity());
+		when(groupRepository.findOne(GROUP_ID)).thenReturn(null);
+		// When
+		systemUnderTest.deleteMembership(GROUP_ID, USER_ID_1);
+	}
+
+	@Test(expected = LastAdminCannotBeRemovedException.class)
+	public void shouldThrowLastAdminCannotBeRemovedExceptionWhenDeleteIsCalled() {
+		// Given
+		UserEntity userEntity = UserEntity.builder().id(USER_ID_1).build();
+		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).build();
+		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity)
+				.groupEntity(groupEntity).role(Role.ADMIN).build();
+		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
+		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
+		when(membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity)).thenReturn(membershipEntity);
+		when(membershipRepository.findByGroupEntity(groupEntity)).thenReturn(Arrays.asList(membershipEntity));
+		// When
+		systemUnderTest.deleteMembership(GROUP_ID, USER_ID_1);
 	}
 }
