@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import com.epam.internship.GroupService;
 import com.epam.internship.dto.Group;
 import com.epam.internship.entity.GroupEntity;
+import com.epam.internship.entity.MembershipEntity;
+import com.epam.internship.entity.Role;
 import com.epam.internship.entity.UserEntity;
 import com.epam.internship.exception.UserDoesNotExistsException;
 import com.epam.internship.repo.GroupRepository;
+import com.epam.internship.repo.MembershipRepository;
 import com.epam.internship.repo.UserRepository;
 
 @Service
@@ -29,6 +32,9 @@ public class GroupServiceImpl implements GroupService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private MembershipRepository membershipRepostiroy;
+	
+	@Autowired
 	private ConversionService conversionService;
 
 	@Override
@@ -41,9 +47,11 @@ public class GroupServiceImpl implements GroupService {
 		Validate.notBlank(title);
 		Validate.inclusiveBetween(1, 70, title.length());
 		Validate.inclusiveBetween(1, 2000, description.length());
-
+		
 		GroupEntity groupEntity = GroupEntity.builder().title(title).description(description).createdBy(userEntity)
 				.build();
+		MembershipEntity membershipEntity = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity).role(Role.ADMIN).build();
+		membershipRepostiroy.save(membershipEntity);
 		groupRepository.save(groupEntity);
 		return conversionService.convert(groupEntity, Group.class);
 	}

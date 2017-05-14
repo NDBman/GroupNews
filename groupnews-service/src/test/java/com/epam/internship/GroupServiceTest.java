@@ -27,6 +27,7 @@ import com.epam.internship.entity.UserEntity;
 import com.epam.internship.exception.UserDoesNotExistsException;
 import com.epam.internship.impl.GroupServiceImpl;
 import com.epam.internship.repo.GroupRepository;
+import com.epam.internship.repo.MembershipRepository;
 import com.epam.internship.repo.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,6 +41,9 @@ public class GroupServiceTest {
 
 	@Mock
 	private GroupRepository groupRepository;
+	
+	@Mock
+	private MembershipRepository membershipRepository;
 
 	@InjectMocks
 	private GroupServiceImpl systemUnderTest;
