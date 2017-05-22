@@ -76,9 +76,9 @@ public class MembershipServiceTest {
 				.createdBy(userEntity1).build();
 		Member member1 = Member.builder().userId(USER_ID_1).role(Role.USER).build();
 		Member member2 = Member.builder().userId(USER_ID_2).role(Role.ADMIN).build();
-		MembershipEntity membershipEntity1 = MembershipEntity.builder().member(userEntity1).groupEntity(groupEntity)
+		MembershipEntity membershipEntity1 = MembershipEntity.builder().member(userEntity1).group(groupEntity)
 				.role(member1.getRole()).build();
-		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity2).groupEntity(groupEntity)
+		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity2).group(groupEntity)
 				.role(member2.getRole()).build();
 		List<MembershipEntity> membershipEntities = Arrays.asList(membershipEntity1, membershipEntity2);
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
@@ -118,11 +118,11 @@ public class MembershipServiceTest {
 		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).createdBy(new UserEntity()).title(GROUP_TITLE)
 				.description(GROUP_DESCRIPTION).build();
 		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity)
-				.groupEntity(groupEntity).role(Role.USER).build();
+				.group(groupEntity).role(Role.USER).build();
 
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
-		when(membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity)).thenReturn(membershipEntity);
+		when(membershipRepository.findByMemberAndGroup(userEntity, groupEntity)).thenReturn(membershipEntity);
 
 		/// When
 		systemUnderTest.addUsersToGroup(GROUP_ID,
@@ -139,12 +139,12 @@ public class MembershipServiceTest {
 		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).createdBy(new UserEntity()).title(GROUP_TITLE)
 				.description(GROUP_DESCRIPTION).build();
 		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity)
-				.groupEntity(groupEntity).role(Role.ADMIN).build();
+				.group(groupEntity).role(Role.ADMIN).build();
 
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
-		when(membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity)).thenReturn(membershipEntity);
-		when(membershipRepository.findByGroupEntity(groupEntity)).thenReturn(Arrays.asList(membershipEntity));
+		when(membershipRepository.findByMemberAndGroup(userEntity, groupEntity)).thenReturn(membershipEntity);
+		when(membershipRepository.findByGroup(groupEntity)).thenReturn(Arrays.asList(membershipEntity));
 		// When
 		systemUnderTest.addUsersToGroup(GROUP_ID,
 				Arrays.asList(Member.builder().userId(USER_ID_1).role(Role.USER).build()));
@@ -156,10 +156,10 @@ public class MembershipServiceTest {
 		UserEntity userEntity = UserEntity.builder().id(USER_ID_1).build();
 		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).build();
 		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity)
-				.groupEntity(groupEntity).role(Role.USER).build();
+				.group(groupEntity).role(Role.USER).build();
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
-		when(membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity)).thenReturn(membershipEntity);
+		when(membershipRepository.findByMemberAndGroup(userEntity, groupEntity)).thenReturn(membershipEntity);
 		// When
 		systemUnderTest.deleteMembership(GROUP_ID, USER_ID_1);
 		// Then
@@ -190,11 +190,11 @@ public class MembershipServiceTest {
 		UserEntity userEntity = UserEntity.builder().id(USER_ID_1).build();
 		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).build();
 		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity)
-				.groupEntity(groupEntity).role(Role.ADMIN).build();
+				.group(groupEntity).role(Role.ADMIN).build();
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
-		when(membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity)).thenReturn(membershipEntity);
-		when(membershipRepository.findByGroupEntity(groupEntity)).thenReturn(Arrays.asList(membershipEntity));
+		when(membershipRepository.findByMemberAndGroup(userEntity, groupEntity)).thenReturn(membershipEntity);
+		when(membershipRepository.findByGroup(groupEntity)).thenReturn(Arrays.asList(membershipEntity));
 		// When
 		systemUnderTest.deleteMembership(GROUP_ID, USER_ID_1);
 	}
