@@ -52,7 +52,7 @@ public class MembershipServiceImpl implements MembershipService {
 			if (userEntity == null) {
 				throw new UserDoesNotExistsException();
 			}
-			MembershipEntity alreadyExistingMembership = membershipRepository.findByMemberAndGroupEntity(userEntity,
+			MembershipEntity alreadyExistingMembership = membershipRepository.findByMemberAndGroup(userEntity,
 					groupEntity);
 			if (alreadyExistingMembership == null) {
 				for(MembershipEntity me : membershipEntities){
@@ -60,7 +60,7 @@ public class MembershipServiceImpl implements MembershipService {
 						membershipEntities.remove(me);
 					}
 				}
-				membershipEntities.add(MembershipEntity.builder().member(userEntity).groupEntity(groupEntity)
+				membershipEntities.add(MembershipEntity.builder().member(userEntity).group(groupEntity)
 						.role(member.getRole()).build());
 			} else {
 				if (alreadyExistingMembership.getRole() == Role.ADMIN && member.getRole() == Role.USER) {
@@ -72,7 +72,6 @@ public class MembershipServiceImpl implements MembershipService {
 
 		}
 		membershipEntities = membershipRepository.save(membershipEntities);
-		System.out.println(membershipEntities);
 		return (List<Membership>) conversionService.convert(membershipEntities,
 				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(MembershipEntity.class)),
 				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(Membership.class)));
@@ -81,7 +80,7 @@ public class MembershipServiceImpl implements MembershipService {
 	private void canChangeRole(GroupEntity groupEntity) {
 
 		int adminCounter = 0;
-		for (MembershipEntity me : membershipRepository.findByGroupEntity(groupEntity)) {
+		for (MembershipEntity me : membershipRepository.findByGroup(groupEntity)) {
 			if (me.getRole() == Role.ADMIN) {
 				adminCounter++;
 			}
@@ -101,7 +100,7 @@ public class MembershipServiceImpl implements MembershipService {
 		if (groupEntity == null) {
 			throw new GroupDoesNotExistsException();
 		}
-		MembershipEntity membershipEntity = membershipRepository.findByMemberAndGroupEntity(userEntity, groupEntity);
+		MembershipEntity membershipEntity = membershipRepository.findByMemberAndGroup(userEntity, groupEntity);
 		if (membershipEntity.getRole() == Role.ADMIN) {
 			canChangeRole(groupEntity);
 		}

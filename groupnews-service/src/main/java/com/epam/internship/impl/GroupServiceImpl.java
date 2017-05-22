@@ -50,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
 		
 		GroupEntity groupEntity = GroupEntity.builder().title(title).description(description).createdBy(userEntity)
 				.build();
-		MembershipEntity membershipEntity = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity).role(Role.ADMIN).build();
+		MembershipEntity membershipEntity = MembershipEntity.builder().member(userEntity).group(groupEntity).role(Role.ADMIN).build();
 		membershipRepostiroy.save(membershipEntity);
 		groupRepository.save(groupEntity);
 		return conversionService.convert(groupEntity, Group.class);

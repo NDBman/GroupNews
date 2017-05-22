@@ -14,7 +14,7 @@ public interface MembershipRepository extends JpaRepository<MembershipEntity, Lo
 
 	List<MembershipEntity> findByMember(UserEntity userEntity);
 
-	List<MembershipEntity> findByGroupEntity(GroupEntity groupEntity);
+	List<MembershipEntity> findByGroup(GroupEntity groupEntity);
 	
-	MembershipEntity findByMemberAndGroupEntity(UserEntity userEntity, GroupEntity groupEntity);
+	MembershipEntity findByMemberAndGroup(UserEntity userEntity, GroupEntity groupEntity);
 }

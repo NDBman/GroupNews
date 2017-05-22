@@ -1,9 +1,11 @@
 package com.epam.internship.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -24,8 +26,11 @@ public class MembershipEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
+	@JoinColumn(nullable = false)
 	private UserEntity member;
 	@ManyToOne
-	private GroupEntity groupEntity;
+	@JoinColumn(nullable = false)
+	private GroupEntity group;
+	@Column(nullable = false)
 	private Role role;
 }
