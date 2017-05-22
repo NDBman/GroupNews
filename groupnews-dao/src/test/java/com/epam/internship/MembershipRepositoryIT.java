@@ -48,7 +48,7 @@ public class MembershipRepositoryIT {
 	public void shouldReturnSameMembershipWhenSaveIsCalled() {
 		// Given
 		membershipEntity = MembershipEntity.builder().id(ID_1).member(userRepository.findOne(ID_1))
-				.groupEntity(groupRepository.findOne(ID_1)).role(Role.USER).build();
+				.group(groupRepository.findOne(ID_1)).role(Role.USER).build();
 		// When
 		MembershipEntity savedMembershipEntity = systemUnderTest.save(membershipEntity);
 		// Then
@@ -68,7 +68,8 @@ public class MembershipRepositoryIT {
 	@Test
 	public void shouldReturnAllMembershipsWhenFindAllIsCalled() {
 		// Given
-		membershipEntity = MembershipEntity.builder().id(2L).build();
+		membershipEntity = MembershipEntity.builder().id(2L).member(userRepository.findOne(ID_1))
+				.group(groupRepository.findOne(ID_1)).role(Role.USER).build();
 		systemUnderTest.save(membershipEntity);
 		// When
 		List<MembershipEntity> memberships = systemUnderTest.findAll();
@@ -97,7 +98,8 @@ public class MembershipRepositoryIT {
 	@Test
 	public void shouldDeleteAllMembershipWhenDeleteAllIsCalled() {
 		// Given
-		membershipEntity = MembershipEntity.builder().id(2L).build();
+		membershipEntity = MembershipEntity.builder().id(2L).member(userRepository.findOne(ID_1))
+				.group(groupRepository.findOne(ID_1)).role(Role.USER).build();
 		systemUnderTest.save(membershipEntity);
 		// When
 		systemUnderTest.deleteAll();
@@ -110,12 +112,12 @@ public class MembershipRepositoryIT {
 		// Given
 		UserEntity userEntity = userRepository.findOne(ID_1);
 		GroupEntity groupEntity = groupRepository.findOne(ID_1);
-		membershipEntity = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity).build();
-		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity)
+		MembershipEntity membershipEntity1 = systemUnderTest.findOne(ID_1);
+		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity).group(groupEntity)
 				.role(Role.USER).build();
+
 		systemUnderTest.save(membershipEntity2);
-		systemUnderTest.save(membershipEntity);
-		List<MembershipEntity> expectedMemberships = Arrays.asList(membershipEntity2, membershipEntity);
+		List<MembershipEntity> expectedMemberships = Arrays.asList(membershipEntity1, membershipEntity2);
 		// When
 		List<MembershipEntity> actualMemberships = systemUnderTest.findByMember(userEntity);
 		// Then
@@ -125,18 +127,15 @@ public class MembershipRepositoryIT {
 	@Test
 	public void shouldReturnListOfMembershipsBelongingToGivenGroup() {
 		// Given
-		UserEntity userEntity1 = userRepository.findOne(ID_1);
-		UserEntity userEntity2 = userRepository.findOne(ID_2);
+		UserEntity userEntity = userRepository.findOne(ID_2);
 		GroupEntity groupEntity = groupRepository.findOne(ID_1);
-		MembershipEntity membershipEntity1 = MembershipEntity.builder().member(userEntity1).groupEntity(groupEntity)
-				.role(Role.ADMIN).build();
-		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity2).groupEntity(groupEntity)
+		MembershipEntity membershipEntity1 = systemUnderTest.findOne(ID_1);
+		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity).group(groupEntity)
 				.role(Role.USER).build();
-		systemUnderTest.save(membershipEntity1);
 		systemUnderTest.save(membershipEntity2);
 		List<MembershipEntity> expectedMembershipEntites = Arrays.asList(membershipEntity1, membershipEntity2);
 		// When
-		List<MembershipEntity> actualMembershipEntites = systemUnderTest.findByGroupEntity(groupEntity);
+		List<MembershipEntity> actualMembershipEntites = systemUnderTest.findByGroup(groupEntity);
 		// Then
 		assertEquals(expectedMembershipEntites, actualMembershipEntites);
 	}
@@ -146,11 +145,9 @@ public class MembershipRepositoryIT {
 		// Given
 		UserEntity userEntity = userRepository.findOne(ID_1);
 		GroupEntity groupEntity = groupRepository.findOne(ID_1);
-		MembershipEntity membershipEntity = MembershipEntity.builder().member(userEntity).groupEntity(groupEntity)
-				.role(Role.ADMIN).build();
-		systemUnderTest.save(membershipEntity);
+		MembershipEntity membershipEntity = systemUnderTest.findOne(ID_1);
 		// When
-		MembershipEntity actualMembershipEntity = systemUnderTest.findByMemberAndGroupEntity(userEntity, groupEntity);
+		MembershipEntity actualMembershipEntity = systemUnderTest.findByMemberAndGroup(userEntity, groupEntity);
 		// Then
 		assertEquals(membershipEntity, actualMembershipEntity);
 	}

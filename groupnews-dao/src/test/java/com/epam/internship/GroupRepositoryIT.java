@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.internship.entity.GroupEntity;
@@ -37,7 +38,7 @@ public class GroupRepositoryIT {
 
 	private static final String GROUP_TITLE_1 = "Group 1";
 	private static final String GROUP_DESCRIPTION_1 = "Group description 1";
-	
+
 	private static final String GROUP_TITLE_2 = "Group 1";
 	private static final String GROUP_DESCRIPTION_2 = "Group description 2";
 
@@ -102,7 +103,9 @@ public class GroupRepositoryIT {
 		assertEquals(null, systemUnderTest.findOne(savedGroupEntity.getId()));
 	}
 
-	@Test
+	// Cannot delete every group entity because some of them are referenced in
+	// other entities.
+	@Test(expected = DataIntegrityViolationException.class)
 	public void shouldCountEqualToZeroWhenDeleteAllIsCalled() {
 		// Given
 		systemUnderTest.save(groupEntity2);
@@ -113,18 +116,18 @@ public class GroupRepositoryIT {
 	}
 
 	@Test
-	public void shouldReturnListOfGroupsBelongingToGivenUserWhenFindByCreatedByIsCalled(){
-		//Given
+	public void shouldReturnListOfGroupsBelongingToGivenUserWhenFindByCreatedByIsCalled() {
+		// Given
 		UserEntity userEntity = userRepository.findOne(USER_ID);
-		GroupEntity groupEntity1 = GroupEntity.builder().title(GROUP_TITLE_1).createdBy(userEntity).description(GROUP_DESCRIPTION_1).build();
-		GroupEntity groupEntity2 = GroupEntity.builder().title(GROUP_TITLE_2).createdBy(userEntity).description(GROUP_DESCRIPTION_2).build();
-		
-		systemUnderTest.save(groupEntity1);
+		GroupEntity groupEntity1 = systemUnderTest.findOne(GROUP_ID_1);
+		GroupEntity groupEntity2 = GroupEntity.builder().title(GROUP_TITLE_1).createdBy(userEntity)
+				.description(GROUP_DESCRIPTION_1).build();
+
 		systemUnderTest.save(groupEntity2);
-		List<GroupEntity> expectedList = Arrays.asList(groupEntity1,groupEntity2);
-		//When
+		List<GroupEntity> expectedList = Arrays.asList(groupEntity1, groupEntity2);
+		// When
 		List<GroupEntity> usersCreatedGroups = systemUnderTest.findByCreatedBy(userEntity);
-		//Then
+		// Then
 		assertEquals(expectedList, usersCreatedGroups);
 	}
 }
