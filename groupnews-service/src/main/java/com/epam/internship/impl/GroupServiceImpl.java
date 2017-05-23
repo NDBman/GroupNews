@@ -32,7 +32,7 @@ public class GroupServiceImpl implements GroupService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private MembershipRepository membershipRepostiroy;
+	private MembershipRepository membershipRepository;
 	
 	@Autowired
 	private ConversionService conversionService;
@@ -51,7 +51,7 @@ public class GroupServiceImpl implements GroupService {
 		GroupEntity groupEntity = GroupEntity.builder().title(title).description(description).createdBy(userEntity)
 				.build();
 		MembershipEntity membershipEntity = MembershipEntity.builder().member(userEntity).group(groupEntity).role(Role.ADMIN).build();
-		membershipRepostiroy.save(membershipEntity);
+		membershipRepository.save(membershipEntity);
 		groupRepository.save(groupEntity);
 		return conversionService.convert(groupEntity, Group.class);
 	}

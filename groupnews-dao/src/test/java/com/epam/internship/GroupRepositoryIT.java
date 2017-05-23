@@ -11,7 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,7 +21,7 @@ import com.epam.internship.repo.GroupRepository;
 import com.epam.internship.repo.UserRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootApplication
+@EnableAutoConfiguration
 @Transactional
 public class GroupRepositoryIT {
 

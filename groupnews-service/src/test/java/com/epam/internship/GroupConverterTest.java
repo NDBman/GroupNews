@@ -25,25 +25,26 @@ public class GroupConverterTest {
 	@Mock
 	private UserConverter userConverter;
 
-	private final Long ID = 1L;
+	private final Long GROUP_ID = 1L;
 	private final String TITLE = "Titlte";
 	private final String DESCRIPTION = "Description";
 
+	private final Long USER_ID = 1L;
 	private final String USER_NAME = "Tim";
 	private final String USER_EMAIL = "email@test.hu";
 
 	@Test
 	public void shouldReturnGroupEntityWithMatchingFields() {
 		// Given
-		User user = User.builder().id(ID).name(USER_NAME).email(USER_EMAIL).build();
-		Group group = Group.builder().id(1L).title(TITLE).description(DESCRIPTION).createdBy(user).build();
+		User user = User.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
+		Group group = Group.builder().id(GROUP_ID).title(TITLE).description(DESCRIPTION).createdBy(user).build();
 
-		UserEntity userEntity = UserEntity.builder().id(ID).name(USER_NAME).email(USER_EMAIL).build();
+		UserEntity userEntity = UserEntity.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
 		when(userConverter.convert(user)).thenReturn(userEntity);
 		// When
 		GroupEntity groupEntity = systemUnderTest.convert(group);
 		// Then
-		assertEquals(ID, groupEntity.getId());
+		assertEquals(GROUP_ID, groupEntity.getId());
 		assertEquals(TITLE, groupEntity.getTitle());
 		assertEquals(DESCRIPTION, groupEntity.getDescription());
 		assertEquals(userConverter.convert(user), groupEntity.getCreatedBy());

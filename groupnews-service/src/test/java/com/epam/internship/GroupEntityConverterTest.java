@@ -25,27 +25,28 @@ public class GroupEntityConverterTest {
 	@Mock
 	private UserEntityConverter userEntityConverter;
 
-	private final Long ID = 1L;
+	private final Long GROUP_ID = 10L;
 	private final String TITLE = "Title";
 	private final String DESCRIPTION = "Desc";
 
+	private final Long USER_ID = 1L;
 	private final String USER_NAME = "Tim";
 	private final String USER_EMAIL = "email@test.hu";
 
 	@Test
 	public void shouldReturnGroupDtoWithMatchingFields() {
 		// Given
-		UserEntity userEntity = UserEntity.builder().id(ID).name(USER_NAME).email(USER_EMAIL).build();
-		GroupEntity groupEntity = GroupEntity.builder().id(ID).title(TITLE).description(DESCRIPTION)
+		UserEntity userEntity = UserEntity.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
+		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).title(TITLE).description(DESCRIPTION)
 				.createdBy(userEntity).build();
 
-		User user = User.builder().id(ID).name(USER_NAME).email(USER_EMAIL).build();
+		User user = User.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
 
 		when(userEntityConverter.convert(userEntity)).thenReturn(user);
 		// When
 		Group group = systemUnderTest.convert(groupEntity);
 		// Then
-		assertEquals(ID, group.getId());
+		assertEquals(GROUP_ID, group.getId());
 		assertEquals(TITLE, group.getTitle());
 		assertEquals(DESCRIPTION, group.getDescription());
 		assertEquals(userEntityConverter.convert(userEntity), group.getCreatedBy());

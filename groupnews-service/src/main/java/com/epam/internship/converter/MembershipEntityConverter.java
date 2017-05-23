@@ -19,7 +19,7 @@ public class MembershipEntityConverter implements Converter<MembershipEntity, Me
 	public Membership convert(MembershipEntity source) {
 		Membership membership = Membership.builder().id(source.getId())
 				.member(userEntityConverter.convert(source.getMember()))
-				.group(groupEntityConverter.convert(source.getGroup())).role(source.getRole()).build();
+				.group(groupEntityConverter.convert(source.getGroup())).role(source.getRole().toString()).build();
 		return membership;
 	}
 

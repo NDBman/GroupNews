@@ -32,24 +32,26 @@ public class MembershipEntityConverterTest {
 	@Mock
 	private GroupEntityConverter groupEntityConverter;
 
-	private final Long ID = 1L;
-
+	private final Long MEMBERSHIP_ID = 10L;
+	
+	private final Long USER_ID = 7L;
 	private final String USER_NAME = "Tim";
 	private final String USER_EMAIL = "email@test.hu";
 
+	private final Long GROUP_ID = 1L;
 	private final String GROUP_TITLE = "Group";
 	private final String GROUP_DESCRIPTION = "Description";
 
 	@Test
 	public void shouldReturnMembershipDtoWithGivenFields() {
 		// Given
-		UserEntity userEntity = UserEntity.builder().id(ID).name(USER_NAME).email(USER_EMAIL).build();
-		GroupEntity groupEntity = GroupEntity.builder().id(ID).title(GROUP_TITLE).description(GROUP_DESCRIPTION)
+		UserEntity userEntity = UserEntity.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
+		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).title(GROUP_TITLE).description(GROUP_DESCRIPTION)
 				.createdBy(userEntity).build();
-		MembershipEntity membershipEntity = MembershipEntity.builder().id(ID).member(userEntity).group(groupEntity)
+		MembershipEntity membershipEntity = MembershipEntity.builder().id(MEMBERSHIP_ID).member(userEntity).group(groupEntity)
 				.role(Role.ADMIN).build();
-		User user = User.builder().id(ID).name(USER_NAME).email(USER_EMAIL).build();
-		Group group = Group.builder().id(ID).title(GROUP_TITLE).description(GROUP_DESCRIPTION).createdBy(user).build();
+		User user = User.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
+		Group group = Group.builder().id(GROUP_ID).title(GROUP_TITLE).description(GROUP_DESCRIPTION).createdBy(user).build();
 		when(userEntityConverter.convert(userEntity)).thenReturn(user);
 		when(groupEntityConverter.convert(groupEntity)).thenReturn(group);
 		// When
@@ -58,6 +60,6 @@ public class MembershipEntityConverterTest {
 		assertEquals(membershipEntity.getId(), membership.getId());
 		assertEquals(userEntityConverter.convert(membershipEntity.getMember()), membership.getMember());
 		assertEquals(groupEntityConverter.convert(membershipEntity.getGroup()), membership.getGroup());
-		assertEquals(membershipEntity.getRole(), membership.getRole());
+		assertEquals(membershipEntity.getRole().toString(), membership.getRole());
 	}
 }

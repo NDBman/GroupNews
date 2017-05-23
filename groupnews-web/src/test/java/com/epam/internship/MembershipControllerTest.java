@@ -55,6 +55,8 @@ public class MembershipControllerTest {
 	private static List<Member> members;
 	private static String membersJson;
 
+	private static final String USER_ROLE = "USER";
+
 	@BeforeClass
 	public static void setUp() {
 		// Given
@@ -63,7 +65,7 @@ public class MembershipControllerTest {
 		membersJson = GSON.toJson(members);
 		user = User.builder().id(USER_ID).build();
 		group = Group.builder().id(GROUP_ID).build();
-		membership = Membership.builder().id(MEMBERSHIP_ID).member(user).group(group).role(Role.USER).build();
+		membership = Membership.builder().id(MEMBERSHIP_ID).member(user).group(group).role(USER_ROLE).build();
 	}
 
 	@Test
