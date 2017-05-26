@@ -55,23 +55,28 @@ public class MembershipServiceImpl implements MembershipService {
 		return userEntity;
 	}
 
+	public void changeRoleInListElement(List<MembershipEntity> membershipEntities, MembershipEntity membershipEntity,
+			Member member) {
+		int membershipIndex = membershipEntities.indexOf(membershipEntity);
+		membershipEntities.get(membershipIndex).setRole(conversionService.convert(member.getRole(), Role.class));
+	}
+
 	private void createMembeshipIfItDidNotExistedBefore(List<MembershipEntity> membershipEntities,
 			UserEntity userEntity, GroupEntity groupEntity, Member member) {
 		boolean updateUserOnlyOnce = true;
 		for (MembershipEntity me : membershipEntities) {
 			if (me.getMember().equals(userEntity)) {
-				int membershipIndex = membershipEntities.indexOf(me);
-				membershipEntities.get(membershipIndex).setRole(conversionService.convert(member.getRole(), Role.class));
+				changeRoleInListElement(membershipEntities, me, member);
 				updateUserOnlyOnce = false;
 				break;
 			}
 		}
 		if (updateUserOnlyOnce) {
-			membershipEntities.add(
-					MembershipEntity.builder().member(userEntity).group(groupEntity).role(conversionService.convert(member.getRole(), Role.class)).build());
+			membershipEntities.add(MembershipEntity.builder().member(userEntity).group(groupEntity)
+					.role(conversionService.convert(member.getRole(), Role.class)).build());
 		}
 	}
-	
+
 	private void processCreateMembershipRequests(List<MembershipEntity> membershipEntities, List<Member> newMembers,
 			GroupEntity groupEntity) {
 		for (Member member : newMembers) {
@@ -84,8 +89,13 @@ public class MembershipServiceImpl implements MembershipService {
 				if (alreadyExistingMembership.getRole() == Role.ADMIN && member.getRole().equals("USER")) {
 					checkIfCanChangeRole(groupEntity);
 				}
-				alreadyExistingMembership.setRole(conversionService.convert(member.getRole(), Role.class));
-				membershipEntities.add(alreadyExistingMembership);
+				if (membershipEntities.contains(alreadyExistingMembership)) {
+					changeRoleInListElement(membershipEntities, alreadyExistingMembership, member);
+				} else {
+					alreadyExistingMembership.setRole(conversionService.convert(member.getRole(), Role.class));
+					membershipEntities.add(alreadyExistingMembership);
+				}
+
 			}
 
 		}
@@ -105,7 +115,8 @@ public class MembershipServiceImpl implements MembershipService {
 
 	private void checkIfCanChangeRole(GroupEntity groupEntity) {
 
-		long adminCounter = membershipRepository.findByGroup(groupEntity).stream().filter(m -> m.getRole().equals(Role.ADMIN)).count();
+		long adminCounter = membershipRepository.findByGroup(groupEntity).stream()
+				.filter(m -> m.getRole().equals(Role.ADMIN)).count();
 		if (adminCounter == 1) {
 			throw new LastAdminCannotBeRemovedException();
 		}

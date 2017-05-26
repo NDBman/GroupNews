@@ -80,24 +80,27 @@ public class MembershipServiceTest {
 		Member member1 = Member.builder().userId(USER_ID_1).role(ROLE_USER).build();
 		Member member2 = Member.builder().userId(USER_ID_2).role(ROLE_ADMIN).build();
 		Member member3 = Member.builder().userId(USER_ID_1).role(ROLE_ADMIN).build();
+		Member member4 = Member.builder().userId(USER_ID_2).role(ROLE_USER).build();
 		MembershipEntity membershipEntity1 = MembershipEntity.builder().member(userEntity1).group(groupEntity)
 				.role(Role.ADMIN).build();
 		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity2).group(groupEntity)
-				.role(Role.ADMIN).build();
+				.role(Role.USER).build();
 		List<MembershipEntity> membershipEntities = Arrays.asList(membershipEntity1, membershipEntity2);
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity1);
 		when(userRepository.findOne(USER_ID_2)).thenReturn(userEntity2);
+		when(membershipRepository.findByMemberAndGroup(userEntity1, groupEntity)).thenReturn(MembershipEntity.builder().member(userEntity1).group(groupEntity).role(Role.ADMIN).build());
 		when(conversionService.convert(ROLE_USER, Role.class)).thenReturn(Role.USER);
 		when(conversionService.convert(ROLE_ADMIN, Role.class)).thenReturn(Role.ADMIN);
 		// When
-		systemUnderTest.addUsersToGroup(GROUP_ID, Arrays.asList(member1, member2, member3));
+		systemUnderTest.addUsersToGroup(GROUP_ID, Arrays.asList(member1, member2, member3, member4));
 
 		// Then
 		verify(membershipRepository).save(membershipsCaptor.capture());
 		List<MembershipEntity> actualMembershipEntities = membershipsCaptor.getValue();
 		assertEquals(membershipEntities, actualMembershipEntities);
 	}
+	
 
 	@Test(expected = GroupDoesNotExistsException.class)
 	public void shouldThrowGroupDoesNotExistException() {
