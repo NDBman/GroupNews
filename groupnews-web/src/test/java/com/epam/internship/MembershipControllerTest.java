@@ -25,7 +25,6 @@ import com.epam.internship.dto.Group;
 import com.epam.internship.dto.Member;
 import com.epam.internship.dto.Membership;
 import com.epam.internship.dto.User;
-import com.epam.internship.entity.Role;
 import com.epam.internship.exception.GroupDoesNotExistsException;
 import com.epam.internship.exception.LastAdminCannotBeRemovedException;
 import com.epam.internship.exception.UserDoesNotExistsException;
@@ -55,17 +54,17 @@ public class MembershipControllerTest {
 	private static List<Member> members;
 	private static String membersJson;
 
-	private static final String USER_ROLE = "USER";
+	private static final String ROLE_USER = "USER";
 
 	@BeforeClass
 	public static void setUp() {
 		// Given
-		member = Member.builder().userId(USER_ID).role(Role.USER).build();
+		member = Member.builder().userId(USER_ID).role(ROLE_USER).build();
 		members = Arrays.asList(member);
 		membersJson = GSON.toJson(members);
 		user = User.builder().id(USER_ID).build();
 		group = Group.builder().id(GROUP_ID).build();
-		membership = Membership.builder().id(MEMBERSHIP_ID).member(user).group(group).role(USER_ROLE).build();
+		membership = Membership.builder().id(MEMBERSHIP_ID).member(user).group(group).role(ROLE_USER).build();
 	}
 
 	@Test

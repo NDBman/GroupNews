@@ -67,6 +67,9 @@ public class MembershipServiceTest {
 
 	private final Long MEMBERSHIP_ID = 1L;
 
+	private final String ROLE_USER = "USER";
+	private final String ROLE_ADMIN = "ADMIN";
+
 	@Test
 	public void shouldAddUsersToGroup() {
 		// Given
@@ -74,19 +77,21 @@ public class MembershipServiceTest {
 		UserEntity userEntity2 = UserEntity.builder().id(USER_ID_2).name(USER_NAME_2).email(USER_EMAIL_2).build();
 		GroupEntity groupEntity = GroupEntity.builder().id(GROUP_ID).title(GROUP_TITLE).description(GROUP_DESCRIPTION)
 				.createdBy(userEntity1).build();
-		Member member1 = Member.builder().userId(USER_ID_1).role(Role.USER).build();
-		Member member2 = Member.builder().userId(USER_ID_2).role(Role.ADMIN).build();
+		Member member1 = Member.builder().userId(USER_ID_1).role(ROLE_USER).build();
+		Member member2 = Member.builder().userId(USER_ID_2).role(ROLE_ADMIN).build();
+		Member member3 = Member.builder().userId(USER_ID_1).role(ROLE_ADMIN).build();
 		MembershipEntity membershipEntity1 = MembershipEntity.builder().member(userEntity1).group(groupEntity)
-				.role(member1.getRole()).build();
+				.role(Role.ADMIN).build();
 		MembershipEntity membershipEntity2 = MembershipEntity.builder().member(userEntity2).group(groupEntity)
-				.role(member2.getRole()).build();
+				.role(Role.ADMIN).build();
 		List<MembershipEntity> membershipEntities = Arrays.asList(membershipEntity1, membershipEntity2);
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity1);
 		when(userRepository.findOne(USER_ID_2)).thenReturn(userEntity2);
-
+		when(conversionService.convert(ROLE_USER, Role.class)).thenReturn(Role.USER);
+		when(conversionService.convert(ROLE_ADMIN, Role.class)).thenReturn(Role.ADMIN);
 		// When
-		systemUnderTest.addUsersToGroup(GROUP_ID, Arrays.asList(member1, member2));
+		systemUnderTest.addUsersToGroup(GROUP_ID, Arrays.asList(member1, member2, member3));
 
 		// Then
 		verify(membershipRepository).save(membershipsCaptor.capture());
@@ -108,7 +113,7 @@ public class MembershipServiceTest {
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(new GroupEntity());
 		when(userRepository.findOne(USER_ID_1)).thenReturn(null);
 		systemUnderTest.addUsersToGroup(GROUP_ID,
-				Arrays.asList(Member.builder().userId(USER_ID_1).role(Role.USER).build()));
+				Arrays.asList(Member.builder().userId(USER_ID_1).role(ROLE_USER).build()));
 	}
 
 	@Test
@@ -123,10 +128,11 @@ public class MembershipServiceTest {
 		when(groupRepository.findOne(GROUP_ID)).thenReturn(groupEntity);
 		when(userRepository.findOne(USER_ID_1)).thenReturn(userEntity);
 		when(membershipRepository.findByMemberAndGroup(userEntity, groupEntity)).thenReturn(membershipEntity);
-
+		when(conversionService.convert(ROLE_USER, Role.class)).thenReturn(Role.USER);
+		when(conversionService.convert(ROLE_ADMIN, Role.class)).thenReturn(Role.ADMIN);
 		/// When
 		systemUnderTest.addUsersToGroup(GROUP_ID,
-				Arrays.asList(Member.builder().userId(USER_ID_1).role(Role.ADMIN).build()));
+				Arrays.asList(Member.builder().userId(USER_ID_1).role(ROLE_ADMIN).build()));
 		verify(membershipRepository).save(membershipsCaptor.capture());
 		// Then
 		assertEquals(Role.ADMIN, membershipsCaptor.getValue().get(0).getRole());
@@ -147,7 +153,7 @@ public class MembershipServiceTest {
 		when(membershipRepository.findByGroup(groupEntity)).thenReturn(Arrays.asList(membershipEntity));
 		// When
 		systemUnderTest.addUsersToGroup(GROUP_ID,
-				Arrays.asList(Member.builder().userId(USER_ID_1).role(Role.USER).build()));
+				Arrays.asList(Member.builder().userId(USER_ID_1).role(ROLE_USER).build()));
 	}
 
 	@Test

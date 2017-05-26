@@ -39,52 +39,73 @@ public class MembershipServiceImpl implements MembershipService {
 	@Autowired
 	private GroupRepository groupRepository;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Membership> addUsersToGroup(Long groupId, List<Member> newMembers) {
+	private GroupEntity checkIfGroupExists(Long groupId) {
 		GroupEntity groupEntity = groupRepository.findOne(groupId);
 		if (groupEntity == null) {
 			throw new GroupDoesNotExistsException();
 		}
-		List<MembershipEntity> membershipEntities = new ArrayList<>();
-		for (Member member : newMembers) {
-			UserEntity userEntity = userRepository.findOne(member.getUserId());
-			if (userEntity == null) {
-				throw new UserDoesNotExistsException();
+		return groupEntity;
+	}
+
+	private UserEntity checkIfUserExists(Long userId) {
+		UserEntity userEntity = userRepository.findOne(userId);
+		if (userEntity == null) {
+			throw new UserDoesNotExistsException();
+		}
+		return userEntity;
+	}
+
+	private void createMembeshipIfItDidNotExistedBefore(List<MembershipEntity> membershipEntities,
+			UserEntity userEntity, GroupEntity groupEntity, Member member) {
+		boolean updateUserOnlyOnce = true;
+		for (MembershipEntity me : membershipEntities) {
+			if (me.getMember().equals(userEntity)) {
+				int membershipIndex = membershipEntities.indexOf(me);
+				membershipEntities.get(membershipIndex).setRole(conversionService.convert(member.getRole(), Role.class));
+				updateUserOnlyOnce = false;
+				break;
 			}
+		}
+		if (updateUserOnlyOnce) {
+			membershipEntities.add(
+					MembershipEntity.builder().member(userEntity).group(groupEntity).role(conversionService.convert(member.getRole(), Role.class)).build());
+		}
+	}
+	
+	private void processCreateMembershipRequests(List<MembershipEntity> membershipEntities, List<Member> newMembers,
+			GroupEntity groupEntity) {
+		for (Member member : newMembers) {
+			UserEntity userEntity = checkIfUserExists(member.getUserId());
 			MembershipEntity alreadyExistingMembership = membershipRepository.findByMemberAndGroup(userEntity,
 					groupEntity);
 			if (alreadyExistingMembership == null) {
-				for(MembershipEntity me : membershipEntities){
-					if(me.getMember().equals(userEntity)){
-						membershipEntities.remove(me);
-					}
-				}
-				membershipEntities.add(MembershipEntity.builder().member(userEntity).group(groupEntity)
-						.role(member.getRole()).build());
+				createMembeshipIfItDidNotExistedBefore(membershipEntities, userEntity, groupEntity, member);
 			} else {
-				if (alreadyExistingMembership.getRole() == Role.ADMIN && member.getRole() == Role.USER) {
-					canChangeRole(groupEntity);
+				if (alreadyExistingMembership.getRole() == Role.ADMIN && member.getRole().equals("USER")) {
+					checkIfCanChangeRole(groupEntity);
 				}
-				alreadyExistingMembership.setRole(member.getRole());
+				alreadyExistingMembership.setRole(conversionService.convert(member.getRole(), Role.class));
 				membershipEntities.add(alreadyExistingMembership);
 			}
 
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Membership> addUsersToGroup(Long groupId, List<Member> newMembers) {
+		GroupEntity groupEntity = checkIfGroupExists(groupId);
+		List<MembershipEntity> membershipEntities = new ArrayList<>();
+		processCreateMembershipRequests(membershipEntities, newMembers, groupEntity);
 		membershipEntities = membershipRepository.save(membershipEntities);
 		return (List<Membership>) conversionService.convert(membershipEntities,
 				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(MembershipEntity.class)),
 				TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(Membership.class)));
 	}
 
-	private void canChangeRole(GroupEntity groupEntity) {
+	private void checkIfCanChangeRole(GroupEntity groupEntity) {
 
-		int adminCounter = 0;
-		for (MembershipEntity me : membershipRepository.findByGroup(groupEntity)) {
-			if (me.getRole() == Role.ADMIN) {
-				adminCounter++;
-			}
-		}
+		long adminCounter = membershipRepository.findByGroup(groupEntity).stream().filter(m -> m.getRole().equals(Role.ADMIN)).count();
 		if (adminCounter == 1) {
 			throw new LastAdminCannotBeRemovedException();
 		}
@@ -102,10 +123,10 @@ public class MembershipServiceImpl implements MembershipService {
 		}
 		MembershipEntity membershipEntity = membershipRepository.findByMemberAndGroup(userEntity, groupEntity);
 		if (membershipEntity.getRole() == Role.ADMIN) {
-			canChangeRole(groupEntity);
+			checkIfCanChangeRole(groupEntity);
 		}
 		membershipRepository.delete(membershipEntity);
-		
+
 		return conversionService.convert(membershipEntity, Membership.class);
 	}
 
