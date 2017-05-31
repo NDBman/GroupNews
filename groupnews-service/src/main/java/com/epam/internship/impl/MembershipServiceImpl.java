@@ -39,7 +39,7 @@ public class MembershipServiceImpl implements MembershipService {
 	@Autowired
 	private GroupRepository groupRepository;
 
-	private GroupEntity checkIfGroupExists(Long groupId) {
+	private GroupEntity getGroup(Long groupId) {
 		GroupEntity groupEntity = groupRepository.findOne(groupId);
 		if (groupEntity == null) {
 			throw new GroupDoesNotExistsException();
@@ -47,7 +47,7 @@ public class MembershipServiceImpl implements MembershipService {
 		return groupEntity;
 	}
 
-	private UserEntity checkIfUserExists(Long userId) {
+	private UserEntity getUser(Long userId) {
 		UserEntity userEntity = userRepository.findOne(userId);
 		if (userEntity == null) {
 			throw new UserDoesNotExistsException();
@@ -55,10 +55,10 @@ public class MembershipServiceImpl implements MembershipService {
 		return userEntity;
 	}
 
-	public void changeRoleInListElement(List<MembershipEntity> membershipEntities, MembershipEntity membershipEntity,
+	private void changeRoleInListElement(List<MembershipEntity> membershipEntities, MembershipEntity membershipEntity,
 			Member member) {
 		int membershipIndex = membershipEntities.indexOf(membershipEntity);
-		membershipEntities.get(membershipIndex).setRole(conversionService.convert(member.getRole(), Role.class));
+		membershipEntities.get(membershipIndex).setRole(Role.valueOf(member.getRole()));
 	}
 
 	private void createMembeshipIfItDidNotExistedBefore(List<MembershipEntity> membershipEntities,
@@ -73,14 +73,14 @@ public class MembershipServiceImpl implements MembershipService {
 		}
 		if (updateUserOnlyOnce) {
 			membershipEntities.add(MembershipEntity.builder().member(userEntity).group(groupEntity)
-					.role(conversionService.convert(member.getRole(), Role.class)).build());
+					.role(Role.valueOf(member.getRole())).build());
 		}
 	}
 
 	private void processCreateMembershipRequests(List<MembershipEntity> membershipEntities, List<Member> newMembers,
 			GroupEntity groupEntity) {
 		for (Member member : newMembers) {
-			UserEntity userEntity = checkIfUserExists(member.getUserId());
+			UserEntity userEntity = getUser(member.getUserId());
 			MembershipEntity alreadyExistingMembership = membershipRepository.findByMemberAndGroup(userEntity,
 					groupEntity);
 			if (alreadyExistingMembership == null) {
@@ -92,7 +92,7 @@ public class MembershipServiceImpl implements MembershipService {
 				if (membershipEntities.contains(alreadyExistingMembership)) {
 					changeRoleInListElement(membershipEntities, alreadyExistingMembership, member);
 				} else {
-					alreadyExistingMembership.setRole(conversionService.convert(member.getRole(), Role.class));
+					alreadyExistingMembership.setRole(Role.valueOf(member.getRole()));
 					membershipEntities.add(alreadyExistingMembership);
 				}
 
@@ -104,7 +104,7 @@ public class MembershipServiceImpl implements MembershipService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Membership> addUsersToGroup(Long groupId, List<Member> newMembers) {
-		GroupEntity groupEntity = checkIfGroupExists(groupId);
+		GroupEntity groupEntity = getGroup(groupId);
 		List<MembershipEntity> membershipEntities = new ArrayList<>();
 		processCreateMembershipRequests(membershipEntities, newMembers, groupEntity);
 		membershipEntities = membershipRepository.save(membershipEntities);

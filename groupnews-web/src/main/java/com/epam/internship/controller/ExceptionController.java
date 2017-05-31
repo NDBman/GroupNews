@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.epam.internship.exception.GroupDoesNotExistsException;
 import com.epam.internship.exception.LastAdminCannotBeRemovedException;
-import com.epam.internship.exception.RoleDoesNotExistsException;
 import com.epam.internship.exception.UserDoesNotExistsException;
 
 @ControllerAdvice
 public class ExceptionController {
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler({IllegalArgumentException.class, RoleDoesNotExistsException.class})
+	@ExceptionHandler({IllegalArgumentException.class})
 	public void handleBadRequest() {
 
 	}
