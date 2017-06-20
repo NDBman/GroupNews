@@ -26,5 +26,6 @@ nbdist/
 ### Mac ###
 *.DS_Store
 
-## Logging ###
+=======
+### Logback ###
 *.log

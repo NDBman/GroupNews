@@ -10,6 +10,7 @@ import com.epam.internship.entity.UserEntity;
 
 public class UserEntityConverterTest {
 
+	private final Long USER_ID = 2L;
 	private final String USER_NAME = "Mr. Brown";
 	private final String USER_EMAIL = "brown@email.com";
 
@@ -18,10 +19,11 @@ public class UserEntityConverterTest {
 	@Test
 	public void shouldReturnUserEntityWithSameFieldValues() {
 		// Given
-		UserEntity userEntity = UserEntity.builder().name(USER_NAME).email(USER_EMAIL).build();
+		UserEntity userEntity = UserEntity.builder().id(USER_ID).name(USER_NAME).email(USER_EMAIL).build();
 		// When
 		User user = systemUnderTest.convert(userEntity);
 		// Then
+		assertEquals(USER_ID, user.getId());
 		assertEquals(USER_NAME, user.getName());
 		assertEquals(USER_EMAIL, user.getEmail());
 	}

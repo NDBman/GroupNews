@@ -9,14 +9,15 @@ import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.epam.internship.entity.UserEntity;
 import com.epam.internship.repo.UserRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootApplication
+@EnableAutoConfiguration
 @Transactional
 public class UserRepositoryIT {
 
@@ -37,12 +38,13 @@ public class UserRepositoryIT {
 
 	@Test
 	public void deleteOneOtherOneShouldStay() {
+		// Given
+		UserEntity userEntity = UserEntity.builder().name(USER_NAME_1).email("unique@email.hu").build();
+		systemUnderTest.save(userEntity);
 		// When
-		systemUnderTest.delete(1L);
+		systemUnderTest.delete(userEntity.getId());
 		// Then
-		assertEquals(1, systemUnderTest.count());
-		List<UserEntity> userEntites = systemUnderTest.findAll();
-		assertEquals(2L, userEntites.get(0).getId().longValue());
+		assertEquals(2, systemUnderTest.count());
 	}
 
 	@Test
@@ -77,7 +79,9 @@ public class UserRepositoryIT {
 		assertEquals(USER_EMAIL_2, userEntities.get(1).getEmail());
 	}
 
-	@Test
+	// Cannot delete all user entities because some other entities may reference
+	// them.
+	@Test(expected = DataIntegrityViolationException.class)
 	public void deleteAllShouldLeaveNoUserEntites() {
 		// When
 		systemUnderTest.deleteAll();
